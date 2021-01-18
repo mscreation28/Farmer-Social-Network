@@ -1,5 +1,6 @@
+import '../Widget/titleText.dart';
+import './login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class WelcomePage extends StatefulWidget {
   @override
@@ -9,7 +10,12 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> {
   Widget _loginBtn() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          LoginPage.routeName
+        );
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 13),
@@ -27,7 +33,7 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
         child: Text(
           'Login',
-          style: TextStyle(fontSize: 20, color: Colors.brown.shade700, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 20, color: Theme.of(context).primaryColorDark, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -35,7 +41,12 @@ class _WelcomePageState extends State<WelcomePage> {
 
   Widget _signUpButton() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          LoginPage.routeName
+        );
+      },
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: EdgeInsets.symmetric(vertical: 13),
@@ -52,33 +63,6 @@ class _WelcomePageState extends State<WelcomePage> {
     );
   }
 
-  Widget _title() {
-    return RichText(
-      textAlign: TextAlign.center,
-      text: TextSpan(
-          text: 'K',
-          style: GoogleFonts.portLligatSans(
-            textStyle: Theme.of(context).textTheme.headline4,
-            fontSize: 40,
-            fontWeight: FontWeight.w700,
-            color: Colors.brown.shade700
-          ),
-          children: [
-            TextSpan(
-              text: 'rishi',
-              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 40),
-            ),
-            TextSpan(
-              text: 'Mitr',
-              style: TextStyle(color: Colors.brown.shade700, fontSize: 40),
-            ),
-            TextSpan(
-              text: 'a',
-              style: TextStyle(color: Theme.of(context).accentColor, fontSize: 40),
-            ),
-          ]),
-    );
-  }
 
   Widget _label() {
     return Container(
@@ -87,7 +71,7 @@ class _WelcomePageState extends State<WelcomePage> {
         children: [
           Text(
             "Welcome to the Green World..!",
-            style: TextStyle(color: Colors.brown.shade700, fontSize: 22),
+            style: TextStyle(color: Theme.of(context).primaryColorDark, fontSize: 22),
           ),
         ],
       )
@@ -123,7 +107,11 @@ class _WelcomePageState extends State<WelcomePage> {
             SizedBox(
               height: 170,
             ),
-            _title(),            
+            TitleText(
+              fontsize: 40,
+              color1: Theme.of(context).primaryColorDark,
+              color2: Theme.of(context).accentColor,
+            ),
             SizedBox(
               height: 130,
             ),
