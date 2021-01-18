@@ -1,17 +1,18 @@
-import './signup_page.dart';
-import '../Widget/titleText.dart';
+import 'package:KrishiMitr/Screen/login_page.dart';
+import 'package:KrishiMitr/Widget/titleText.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  static const routeName = './login-page';
+class SignupPage extends StatefulWidget {
+  static const routeName = './signup-page';
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-   Widget _inputArea(String inputText,{bool isPassword = false}) {
+class _SignupPageState extends State<SignupPage> {
+
+   Widget _inputArea(String inputText,{bool isPassword = false, bool isPhone = false}) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
+      margin: EdgeInsets.symmetric(vertical: 7),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children:[
@@ -22,22 +23,23 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 10,
           ),
-          TextField(
+          TextField(            
             obscureText: isPassword,
             decoration: InputDecoration(
               border: InputBorder.none,              
               fillColor: Colors.grey.shade200,
               filled: true,
-              labelText: isPassword ? "Enter Password" : "Enter Mobile Number"
-            ),
-            keyboardType: !isPassword ? TextInputType.phone : TextInputType.text
+              labelText: "Enter $inputText",
+              isDense: true              
+            ),            
+            keyboardType: isPhone ? TextInputType.phone : TextInputType.text,            
           )
         ],
       ),
     );
   }
 
-  Widget _loginButton() {
+  Widget _signupButton() {
     return Container(
       width: MediaQuery.of(context).size.width,
       padding: EdgeInsets.symmetric(vertical: 15),
@@ -62,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
         )
       ),
       child: Text(
-        'Login',
+        'Register Now',
         style: TextStyle(fontSize: 20, color: Theme.of(context).accentColor, fontWeight: FontWeight.bold),
       ),
     );
@@ -77,24 +79,21 @@ class _LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Don\'t have an account ?",
+            "Already have an account ?",
             style: TextStyle(
               fontSize: 13, fontWeight: FontWeight.w600
             ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
+          ),          
           RawMaterialButton(
             onPressed: () {
               Navigator.pushReplacementNamed(
                 context,
-                SignupPage.routeName,
+                LoginPage.routeName
               );
             },                        
             constraints: BoxConstraints(),
             child: Text(
-              'Register',
+              'Login',
               style: TextStyle(
                 color: Theme.of(context).primaryColor,
                 fontSize: 13,
@@ -120,27 +119,35 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(
-                height: height * 0.18,
+                height: height * 0.12,
               ),
               TitleText(fontsize: 40, color1: Theme.of(context).primaryColorDark, color2: Theme.of(context).primaryColor,),
               SizedBox(
-                height: height * 0.08,
+                height: height * 0.04,
               ),
-              _inputArea("Phone Number"),                        
-              _inputArea("Password",isPassword: true),                                     
-              Container(                
-                alignment: Alignment.centerRight,
-                child: Text('Forgot Password ?',
-                  style: TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600
-                  )
-                ),
+              _inputArea("Name"),
+              _inputArea("Phone Number",isPhone: true),
+              Row(                
+                children: [
+                  Container( 
+                    margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
+                    width: MediaQuery.of(context).size.width*0.42,
+                    child: _inputArea("City"),
+                  ),
+                  Container( 
+                    width: MediaQuery.of(context).size.width*0.42,
+                    child: _inputArea("State"),
+                  ),
+                ],
               ),
+              
+              _inputArea("Password",isPassword: true),
+
               SizedBox(
                 height: 20,
               ),
-              _loginButton(),
-              SizedBox(height: height * .1),
+              _signupButton(),
+              SizedBox(height: height * .03),
               _label()
             ]
           ),

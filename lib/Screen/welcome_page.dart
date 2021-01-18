@@ -1,3 +1,5 @@
+import 'package:KrishiMitr/Screen/signup_page.dart';
+
 import '../Widget/titleText.dart';
 import './login_page.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +46,7 @@ class _WelcomePageState extends State<WelcomePage> {
       onTap: () {
         Navigator.pushNamed(
           context,
-          LoginPage.routeName
+          SignupPage.routeName
         );
       },
       child: Container(

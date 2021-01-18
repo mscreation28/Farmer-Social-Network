@@ -1,3 +1,4 @@
+import './Screen/signup_page.dart';
 import './Screen/login_page.dart';
 import './Screen/welcome_page.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,8 @@ class MyApp extends StatelessWidget {
       ),
       home: WelcomePage(),
       routes: {
-        LoginPage.routeName : (ctx) => LoginPage(),        
+        LoginPage.routeName : (ctx) => LoginPage(),
+        SignupPage.routeName : (ctx) => SignupPage()
       },
     );
   }
