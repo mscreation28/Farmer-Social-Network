@@ -1,3 +1,4 @@
+import './Screen/profile_page.dart';
 import './Screen/signup_page.dart';
 import './Screen/login_page.dart';
 import './Screen/welcome_page.dart';
@@ -13,7 +14,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  static const appName = "KrishMitr";
+  static const appName = "Krish Mitr";
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,8 @@ class MyApp extends StatelessWidget {
       home: WelcomePage(),
       routes: {
         LoginPage.routeName : (ctx) => LoginPage(),
-        SignupPage.routeName : (ctx) => SignupPage()
+        SignupPage.routeName : (ctx) => SignupPage(),
+        ProfilePage.routeName : (ctx) => ProfilePage(),
       },
     );
   }
