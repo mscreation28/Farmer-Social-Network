@@ -1,7 +1,5 @@
 import '../Widget/userCropListItem.dart';
 import '../models/dummy_data.dart';
-
-import '../Widget/titleText.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -99,24 +97,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {        
     return Scaffold(
-      appBar: AppBar(
-        title: TitleText(
-          color1: Theme.of(context).primaryColorDark,
-          color2: Theme.of(context).accentColor
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Theme.of(context).primaryColor,
-                Theme.of(context).primaryColorLight
-              ],
-            )
-          ),
-        ),
-      ),      
+      // appBar: AppBar(
+        
+      // ),      
       body: SingleChildScrollView(        
         child: Container(          
           color: Colors.grey.shade100,

@@ -1,5 +1,4 @@
-import './profile_page.dart';
-
+import 'package:KrishiMitr/Screen/tab_page.dart';
 import './signup_page.dart';
 import '../Widget/titleText.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
     return InkWell(
       onTap: () {
         Navigator.pop(context);
-        Navigator.pushReplacementNamed(context, ProfilePage.routeName);
+        Navigator.pushReplacementNamed(context, TabScreen.routeName);
       },
       child: Container(
         width: MediaQuery.of(context).size.width,

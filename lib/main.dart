@@ -1,3 +1,5 @@
+import 'package:KrishiMitr/Screen/tab_page.dart';
+
 import './Screen/profile_page.dart';
 import './Screen/signup_page.dart';
 import './Screen/login_page.dart';
@@ -36,6 +38,7 @@ class MyApp extends StatelessWidget {
         LoginPage.routeName : (ctx) => LoginPage(),
         SignupPage.routeName : (ctx) => SignupPage(),
         ProfilePage.routeName : (ctx) => ProfilePage(),
+        TabScreen.routeName : (ctx) => TabScreen(),
       },
     );
   }
