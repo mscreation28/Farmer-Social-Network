@@ -1,3 +1,5 @@
+import 'package:KrishiMitr/Screen/timeline_activity.dart';
+
 import '../models/dummy_data.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,15 @@ class UserCropList extends StatelessWidget {
   final int index;
   UserCropList(this.index);
 
+  void viewallActicity(int index, BuildContext cntx) {
+    Navigator.pushNamed(
+      cntx,
+      TimelineActivity.routeName,
+      arguments: {
+        'usercropid' : dummyCrop[index].id,        
+      }
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final DateTime date = dummyCrop[index].date;
@@ -62,7 +73,9 @@ class UserCropList extends StatelessWidget {
           width: double.infinity,                  
           color: Colors.white,
           child: FlatButton(
-            onPressed: () {},
+            onPressed: () {
+              viewallActicity(index, context);
+            },
             child: Text(
               'View All Activity',
               style: TextStyle(

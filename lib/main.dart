@@ -1,4 +1,5 @@
 import 'package:KrishiMitr/Screen/tab_page.dart';
+import 'package:KrishiMitr/Screen/timeline_activity.dart';
 
 import './Screen/profile_page.dart';
 import './Screen/signup_page.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         SignupPage.routeName : (ctx) => SignupPage(),
         ProfilePage.routeName : (ctx) => ProfilePage(),
         TabScreen.routeName : (ctx) => TabScreen(),
+        TimelineActivity.routeName : (ctx) => TimelineActivity(),
       },
     );
   }
