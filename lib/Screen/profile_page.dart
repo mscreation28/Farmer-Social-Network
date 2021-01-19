@@ -1,4 +1,5 @@
-import 'package:KrishiMitr/Widget/userCropList.dart';
+import '../Widget/userCropListItem.dart';
+import '../models/dummy_data.dart';
 
 import '../Widget/titleText.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +88,16 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }  
-
+  Widget getUserCropList()
+  {
+    List<Widget> list = new List<Widget>();
+    for(var i = 0; i < dummyCrop.length; i++){
+        list.add(UserCropList(i));
+    }
+    return new Column(children: list);
+  }
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {        
     return Scaffold(
       appBar: AppBar(
         title: TitleText(
@@ -119,12 +127,15 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(
                 height: 20,
               ),
-              Container(
-                height: MediaQuery.of(context).size.height-100,
-                child: UserCropList()
-              ) 
+              getUserCropList()            
             ]
           )
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(
+          Icons.add,          
         ),
       ),
     );

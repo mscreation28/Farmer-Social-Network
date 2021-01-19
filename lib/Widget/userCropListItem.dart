@@ -3,8 +3,11 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 class UserCropList extends StatelessWidget {
+  final int index;
+  UserCropList(this.index);
 
-  Widget _cropSection(int index) {
+  @override
+  Widget build(BuildContext context) {
     final DateTime date = dummyCrop[index].date;
     final String formattedDate = DateFormat("dd MMMM, yyyy").format(date);
     final DateTime curDate = DateTime.now();
@@ -73,17 +76,6 @@ class UserCropList extends StatelessWidget {
           height: 10,
         )
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (ctx, index) {
-        return _cropSection(index);
-      },
-      itemCount: dummyCrop.length,              
     );
   }
 }
