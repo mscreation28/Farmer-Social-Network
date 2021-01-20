@@ -1,6 +1,9 @@
-import 'package:KrishiMitr/models/dummy_data.dart';
-import 'package:KrishiMitr/models/timeline_model.dart';
-import 'package:KrishiMitr/models/user_crop.dart';
+import 'package:KrishiMitr/page/edit_timeline_event.dart';
+
+import '../models/dummy_data.dart';
+import '../models/timeline_model.dart';
+import '../models/user_crop.dart';
+import '../page/new_timeline_event.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +20,16 @@ class TimelineActivity extends StatefulWidget {
 }
 
 class _TimelineActivityState extends State<TimelineActivity> {  
+
+  void editActivity(int index, BuildContext cntx) {
+    Navigator.pushNamed(
+      cntx,
+      EditTimelineEvent.routeName,
+      arguments: {
+        'timelineid' : widget.activityList[index].id,        
+      }
+    );
+  }
 
   TimelineTile _buildTimelineTile(int i) {
     final DateTime date = widget.activityList[i].date;
@@ -62,12 +75,23 @@ class _TimelineActivityState extends State<TimelineActivity> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
-              widget.activityList[i].title,
-              style: TextStyle(
-                fontSize: 16,                
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [                
+                Text(
+                  widget.activityList[i].title,
+                  style: TextStyle(
+                    fontSize: 16,                
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    editActivity(i, context);
+                  }
+                )
+              ],
             ),
             const SizedBox(height: 4),
             Text(
@@ -186,7 +210,9 @@ class _TimelineActivityState extends State<TimelineActivity> {
         child: _getTimeline(widget.usercropId),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, NewTimelineEvent.routeName);
+        },
         child: Icon(Icons.add),
       ),
     );

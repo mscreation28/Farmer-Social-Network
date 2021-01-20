@@ -1,3 +1,5 @@
+import '../page/new_crop_timeline.dart';
+
 import '../Widget/userCropListItem.dart';
 import '../models/dummy_data.dart';
 import 'package:flutter/material.dart';
@@ -116,7 +118,12 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {      
+          Navigator.pushNamed(
+            context,
+            NewCropTimeline.routeName,
+          );
+        },
         child: Icon(
           Icons.add,          
         ),

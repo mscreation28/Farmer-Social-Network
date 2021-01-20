@@ -1,6 +1,10 @@
-import 'package:KrishiMitr/Screen/tab_page.dart';
-import 'package:KrishiMitr/Screen/timeline_activity.dart';
+import 'package:KrishiMitr/page/edit_crop_timeline.dart';
+import 'package:KrishiMitr/page/edit_timeline_event.dart';
+import 'package:KrishiMitr/page/new_timeline_event.dart';
 
+import './Screen/tab_page.dart';
+import './Screen/timeline_activity.dart';
+import './page/new_crop_timeline.dart';
 import './Screen/profile_page.dart';
 import './Screen/signup_page.dart';
 import './Screen/login_page.dart';
@@ -41,6 +45,10 @@ class MyApp extends StatelessWidget {
         ProfilePage.routeName : (ctx) => ProfilePage(),
         TabScreen.routeName : (ctx) => TabScreen(),
         TimelineActivity.routeName : (ctx) => TimelineActivity(),
+        NewCropTimeline.routeName : (ctx) => NewCropTimeline(),
+        NewTimelineEvent.routeName : (ctx) => NewTimelineEvent(),
+        EditCropTimeline.routeName : (ctx) => EditCropTimeline(),
+        EditTimelineEvent.routeName : (ctx) => EditTimelineEvent(),
       },
     );
   }

@@ -1,4 +1,5 @@
 import 'package:KrishiMitr/Screen/timeline_activity.dart';
+import 'package:KrishiMitr/page/edit_crop_timeline.dart';
 
 import '../models/dummy_data.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,15 @@ class UserCropList extends StatelessWidget {
     Navigator.pushNamed(
       cntx,
       TimelineActivity.routeName,
+      arguments: {
+        'usercropid' : dummyCrop[index].id,        
+      }
+    );
+  }
+  void editActivity(int index, BuildContext cntx) {
+    Navigator.pushNamed(
+      cntx,
+      EditCropTimeline.routeName,
       arguments: {
         'usercropid' : dummyCrop[index].id,        
       }
@@ -42,9 +52,14 @@ class UserCropList extends StatelessWidget {
                       fontWeight: FontWeight.bold
                     ),
                   ),
-                  Icon(
-                    Icons.edit
-                  )
+                  IconButton(
+                    icon: Icon(
+                      Icons.edit
+                    ),
+                    onPressed: () {
+                      editActivity(index, context);
+                    }                    
+                  )                  
                 ],
               ),
               Divider(),
