@@ -123,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 shape: BoxShape.circle,                        
                 border: Border.all(
                   color: Colors.white,
-                  width: 8,
+                  width: 5,
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -131,11 +131,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     offset: Offset(0,4),
                     blurRadius: 4,                            
                   )
-                ]
+                ],
+                image: DecorationImage(
+                  image: AssetImage("assets/images/farmer.png"),
+                )
               ),
-              child: Image.asset(
-                "assets/images/farmer.png",                
-              ),
+              // child: Image.asset(
+              //   "assets/images/farmer.png",                
+              // ),
             ),
           ),
         ],
