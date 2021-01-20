@@ -1,3 +1,5 @@
+import '../page/edit_profile.dart';
+
 import '../page/new_crop_timeline.dart';
 
 import '../Widget/userCropListItem.dart';
@@ -13,24 +15,105 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  void gotoEditProfile() {
+    Navigator.pushNamed(
+      context,
+      EditProfile.routeName,
+    );
+  }
+
   Widget _headSection() {
     return Container(
-      height: 225,              
+      // height: 230,              
       child: Stack(                
         alignment: Alignment.topLeft,
         overflow: Overflow.visible,
-        children: [
-          Container(
-            height: 150.0,
-            width: double.infinity,
-            child: Image.asset(
-              "assets/images/back_farm.JPG",
-              fit: BoxFit.cover
-            ),
+        children: [         
+          Column(
+            children: [
+              Container(
+                height: 150.0,
+                width: double.infinity,
+                child: Image.asset(
+                  "assets/images/back_farm.JPG",
+                  fit: BoxFit.cover
+                ),
+              ),
+              Container(                              
+                width: double.infinity,
+                padding: EdgeInsets.only(top: 15,left: 160),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [                        
+                    FittedBox(
+                      child: Text(
+                        'Shyam Makwana',
+                        style: GoogleFonts.cairo(
+                          textStyle: Theme.of(context).textTheme.headline6,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold, 
+                          height: 0.8,
+                        ),
+                      ),
+                    ),
+                    FittedBox(                          
+                      child: Text(
+                        'Junagadh, Gujarat',
+                        style: GoogleFonts.cairo(
+                          textStyle: Theme.of(context).textTheme.caption,
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topRight,
+                      child: FlatButton( 
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,                                                                 
+                        onPressed: () {
+                          gotoEditProfile();
+                        }, 
+                        padding: EdgeInsets.only(right: 17),
+                        minWidth: 0,
+                        height: 0,                       
+                        // constraints: BoxConstraints(),                                                
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text:'Edit Profile',
+                                style: GoogleFonts.cairo(
+                                  textStyle: Theme.of(context).textTheme.caption,
+                                  fontSize: 15,
+                                  color: Theme.of(context).primaryColorDark,
+                                  fontWeight: FontWeight.bold                          
+                                ),                        
+                              ),
+                              WidgetSpan(
+                                child: SizedBox(width: 5,)
+                              ),
+                              WidgetSpan(
+                                child: Icon(
+                                  Icons.edit,
+                                  size: 21,
+                                  color: Theme.of(context).primaryColorDark,
+                                ),
+                              )
+                            ]
+                          ),
+                        )
+                        
+                        // icon: 
+                      ),
+                    ),
+                  ],
+                )
+              ),
+            ],
           ),
           Positioned(  
-            bottom: 0,                 
-            left: 25,
+            top: 100,                 
+            left: 20,
             child: Container(
               height: 120.0,
               width: 120.0,
@@ -54,35 +137,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 "assets/images/farmer.png",                
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: 170, left: 160),                    
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [                        
-                FittedBox(
-                  child: Text(
-                    'Shyam Makwana',
-                    style: GoogleFonts.cairo(
-                      textStyle: Theme.of(context).textTheme.headline6,
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold, 
-                      height: 0.8,
-                    ),
-                  ),
-                ),
-                FittedBox(                          
-                  child: Text(
-                    'Junagadh, Gujarat',
-                    style: GoogleFonts.cairo(
-                      textStyle: Theme.of(context).textTheme.caption,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ),
-              ],
-            )
           ),
         ],
       ),
@@ -110,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
             children: [
               _headSection(),
               SizedBox(
-                height: 20,
+                height: 10,
               ),
               getUserCropList()            
             ]

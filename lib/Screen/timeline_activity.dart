@@ -44,7 +44,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
         color: Colors.grey.shade300
       ),
       indicatorStyle: IndicatorStyle(
-        indicatorXY: 0.2,
+        indicatorXY: 0.25,
         drawGap: true,
         width: 10,
         height: 10,  
@@ -74,24 +74,30 @@ class _TimelineActivityState extends State<TimelineActivity> {
             const EdgeInsets.only(left: 16, right: 10, top: 10, bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [                
-                Text(
-                  widget.activityList[i].title,
-                  style: TextStyle(
-                    fontSize: 16,                
-                    fontWeight: FontWeight.bold,
+          children: [
+            Container(              
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [                
+                  Text(
+                    widget.activityList[i].title,
+                    style: TextStyle(
+                      fontSize: 16,                
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.edit),
-                  onPressed: () {
-                    editActivity(i, context);
-                  }
-                )
-              ],
+                  Container(                    
+                    child: IconButton(
+                      icon: Icon(Icons.edit),
+                      padding: EdgeInsets.all(0),
+                      constraints: BoxConstraints(),
+                      onPressed: () {
+                        editActivity(i, context);
+                      }
+                    ),
+                  )
+                ],
+              ),
             ),
             const SizedBox(height: 4),
             Text(

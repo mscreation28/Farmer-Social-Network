@@ -53,6 +53,8 @@ class UserCropList extends StatelessWidget {
                     ),
                   ),
                   IconButton(
+                    padding: EdgeInsets.all(0),  
+                    constraints: BoxConstraints(),                
                     icon: Icon(
                       Icons.edit
                     ),

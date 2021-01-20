@@ -1,7 +1,7 @@
-import 'package:KrishiMitr/page/edit_crop_timeline.dart';
-import 'package:KrishiMitr/page/edit_timeline_event.dart';
-import 'package:KrishiMitr/page/new_timeline_event.dart';
-
+import './page/edit_crop_timeline.dart';
+import './page/edit_profile.dart';
+import './page/edit_timeline_event.dart';
+import './page/new_timeline_event.dart';
 import './Screen/tab_page.dart';
 import './Screen/timeline_activity.dart';
 import './page/new_crop_timeline.dart';
@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
         NewTimelineEvent.routeName : (ctx) => NewTimelineEvent(),
         EditCropTimeline.routeName : (ctx) => EditCropTimeline(),
         EditTimelineEvent.routeName : (ctx) => EditTimelineEvent(),
+        EditProfile.routeName : (ctx) => EditProfile(),
       },
     );
   }
