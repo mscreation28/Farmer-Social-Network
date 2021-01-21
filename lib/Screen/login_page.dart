@@ -1,3 +1,4 @@
+import 'package:KrishiMitr/Screen/tab_page.dart';
 import './signup_page.dart';
 import '../Widget/titleText.dart';
 import 'package:flutter/material.dart';
@@ -38,32 +39,38 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _loginButton() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(vertical: 15),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: Colors.grey.shade200,
-            offset: Offset(2, 4),
-            blurRadius: 5,
-            spreadRadius: 2
-          )
-        ],
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [
-            Theme.of(context).primaryColorLight,
-            Theme.of(context).primaryColor
+    return InkWell(
+      onTap: () {
+        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, TabScreen.routeName);
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.symmetric(vertical: 15),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+              color: Colors.grey.shade200,
+              offset: Offset(2, 4),
+              blurRadius: 5,
+              spreadRadius: 2
+            )
           ],
-        )
-      ),
-      child: Text(
-        'Login',
-        style: TextStyle(fontSize: 20, color: Theme.of(context).accentColor, fontWeight: FontWeight.bold),
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              Theme.of(context).primaryColorLight,
+              Theme.of(context).primaryColor
+            ],
+          )
+        ),
+        child: Text(
+          'Login',
+          style: TextStyle(fontSize: 20, color: Theme.of(context).accentColor, fontWeight: FontWeight.bold),
+        ),
       ),
     );
   }
