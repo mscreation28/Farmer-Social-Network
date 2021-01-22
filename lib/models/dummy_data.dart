@@ -77,9 +77,9 @@ var dummyTimeline = [
   TimelineModel(
     id: 't7',
     usercropid: 'uc1',
-    title: 'Seeds sowing',
+    title: 'Harvesting',
     description: 'I sowed wheat of variety GW-503. It cost me around 40Rs/kg. It was nice quality seeds.',
-    date: DateTime.parse("2020-07-21 20:18:04Z"),
+    date: DateTime.parse("2020-09-21 20:18:04Z"),
   ),
   TimelineModel(
     id: 't1',
