@@ -1,3 +1,5 @@
+import 'package:KrishiMitr/Screen/timline_comment_page.dart';
+
 import './page/edit_crop_timeline.dart';
 import './page/edit_profile.dart';
 import './page/edit_timeline_event.dart';
@@ -50,6 +52,7 @@ class MyApp extends StatelessWidget {
         EditCropTimeline.routeName : (ctx) => EditCropTimeline(),
         EditTimelineEvent.routeName : (ctx) => EditTimelineEvent(),
         EditProfile.routeName : (ctx) => EditProfile(),
+        TimelineCommentPage.routeName : (ctx) => TimelineCommentPage(),
       },
     );
   }

@@ -13,7 +13,10 @@ class TimelineUpdate extends StatelessWidget {
     return Scaffold(
       body: ListView.builder(
         itemBuilder: (context, index) {
-          return TimelinePost(timeline: timelines[index]);
+          return Card(
+            margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            child: TimelinePost(timeline: timelines[index]),            
+          );
         },
         itemCount: timelines.length,
       )
