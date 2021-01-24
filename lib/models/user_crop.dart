@@ -8,7 +8,9 @@ class UserCrop{
   final String district;
   final String state;
   final int area;
+
   final DateTime date;
+  
 
   const UserCrop({
     @required this.id,

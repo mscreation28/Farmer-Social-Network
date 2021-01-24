@@ -1,5 +1,7 @@
 import 'package:KrishiMitr/models/dummy_data.dart';
+import 'package:KrishiMitr/models/timeline_event.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
+import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,7 +19,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;  
   DateTime _date = DateTime.now();
   String timelineId;
-  TimelineModel event;
+ TimelineEvent timelineEvent;
   String name;
 
   void _presentDatePicker(BuildContext context) {
@@ -36,7 +38,8 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
       if(value == null) {
         return;
       }
-      setState(() {        
+      setState(() {    
+        timelineEvent.timelineDate = value;   
         _date = value;
         print(_date);
       });
@@ -63,21 +66,29 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
   //     )
   //   );
   // }
+  void editTimeLineEvent() async{
+    TimelineEventClient timelineEventClient  = new TimelineEventClient();
+    timelineEventClient.updateTimelineEvent(timelineEvent);
+  }
+
+  void deleteTimeLineEvent() async{
+    TimelineEventClient timelineEventClient = new TimelineEventClient();
+    timelineEventClient.deleteTimelineEvent(timelineEvent.timelineId);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-    timelineId = routArgs['timelineid'];
-    event = dummyTimeline.firstWhere((element) => element.id == timelineId);    
-    _date = event.date;
-
+    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, TimelineEvent>;
+    timelineEvent = routArgs['timeline'];
+    _date = timelineEvent.timelineDate;
+  
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
-
+              deleteTimeLineEvent();
             }
           ),
           IconButton(
@@ -85,7 +96,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-
+                editTimeLineEvent();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
@@ -113,10 +124,10 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
             child: Column(
               children: [                
                 TextFormField(
-                  initialValue: event.title,
+                  initialValue: timelineEvent.title,
                   decoration: InputDecoration(labelText: 'Enter event title*'),
                   validator: (value) => value.isEmpty ? 'event title is required' : null,
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => timelineEvent.title = value,
                 ),
                 SizedBox(height: 10),
                 InkWell(
@@ -150,12 +161,12 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(                  
-                  initialValue: event.description,
+                  initialValue: timelineEvent.description,
                   maxLines: null,
                   decoration: InputDecoration(
                     labelText: 'Enter Description'
                   ),
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => timelineEvent.description = value,
                   keyboardType: TextInputType.multiline,
                 ),
               ],
