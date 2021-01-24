@@ -1,8 +1,11 @@
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
+import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/CropClient.dart';
+import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:KrishiMitr/network/clients/UserCropClient.dart';
 import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
+import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
 
 import '../page/edit_profile.dart';
@@ -17,7 +20,6 @@ import 'package:google_fonts/google_fonts.dart';
 class ProfilePage extends StatefulWidget {
   static const routeName = "./profile-page";
   List<Crop> cropList;
-
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -25,14 +27,12 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   static int userId = 4;
 
-  void gotoEditProfile() {
-    Navigator.pushNamed(
-      context,
-      EditProfile.routeName,
-    );
+  void gotoEditProfile(User user) {
+    Navigator.pushNamed(context, EditProfile.routeName,
+        arguments: {'user': user});
   }
 
-  Widget _headSection() {
+  Widget _headSection(User user) {
     return Container(
       // height: 230,
       child: Stack(
@@ -55,7 +55,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       FittedBox(
                         child: Text(
-                          'Shyam Makwana',
+                          user.userName,
                           style: GoogleFonts.cairo(
                             textStyle: Theme.of(context).textTheme.headline6,
                             fontSize: 25,
@@ -66,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       FittedBox(
                         child: Text(
-                          'Junagadh, Gujarat',
+                          '${user.userCity}, ${user.userState}',
                           style: GoogleFonts.cairo(
                               textStyle: Theme.of(context).textTheme.caption,
                               fontSize: 15,
@@ -79,7 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             onPressed: () {
-                              gotoEditProfile();
+                              gotoEditProfile(user);
                             },
                             padding: EdgeInsets.only(right: 17),
                             minWidth: 0,
@@ -152,9 +152,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-
   }
 
   Widget getUserCropListWidget(List<UserCrop> userCropList) {
@@ -165,15 +164,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return new Column(children: list);
   }
 
+  //get all crops
   Future<List<Crop>> getCropList() async {
     ICropClient cropClient = new CropClient();
     return cropClient.getAllCrops();
   }
 
+  //get specific user
+  Future<User> getUser(int userId) async {
+    IUserClient userClient = new UserClient();
+    return await userClient.getSpecificUser(userId);
+  }
+
   Future<List<UserCrop>> getUserCropList() async {
+    //first get crop list
     widget.cropList = await getCropList();
+
+    //then fetch user crop
     UserCropClient userCropClient = new UserCropClient();
-    List<UserCrop> userCropList = await userCropClient.getAllUserCrop(userId);
+    List<UserCrop> userCropList =
+        await userCropClient.getAllUserCrop(userId);
     userCropList.forEach((userCrop) {
       userCrop.cropName = widget.cropList
           .firstWhere((crop) => crop.cropId == userCrop.cropId)
@@ -193,7 +203,13 @@ class _ProfilePageState extends State<ProfilePage> {
             color: Colors.grey.shade100,
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _headSection(),
+              FutureBuilder(
+                  future: getUser(userId),
+                  builder: (context, snapshot) {
+                    return snapshot.hasData
+                        ? _headSection(snapshot.data as User)
+                        : CircularProgressIndicator();
+                  }),
               SizedBox(
                 height: 10,
               ),
@@ -209,13 +225,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            NewCropTimeline.routeName,
-            arguments: {
-              'cropList':widget.cropList
-            }
-          );
+          Navigator.pushNamed(context, NewCropTimeline.routeName,
+              arguments: {'cropList': widget.cropList});
         },
         child: Icon(
           Icons.add,

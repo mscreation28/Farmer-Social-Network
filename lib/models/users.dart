@@ -1,15 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 class User{
-  final int userId;
-  final String userName;
-  final String userCity;
-  final String userState;
-  final String userContactNumber;
-  final String userProfileUrl;
-  final String userType;
+   int userId;
+   String userName;
+   String userCity;
+   String userState;
+   String userContactNumber;
+   String userProfileUrl;
+   String userType;
+   String userpassword;
 
-  User({@required this.userId,@required this.userName,@required this.userContactNumber,@required this.userCity,@required this.userState, this.userProfileUrl,@required this.userType});
+  User({@required this.userpassword, @required this.userId,@required this.userName,@required this.userContactNumber,@required this.userCity,@required this.userState, this.userProfileUrl,@required this.userType});
   
   factory User.fromJson(Map<String,dynamic> json){
     return User(
@@ -20,7 +21,21 @@ class User{
       userState: json['userState'],
       userProfileUrl: json['userProfileUrl'], 
      userType: json['userType'],
+     userpassword: json['userPassword'],
     );  
+  }
+
+  Map<String, String> toJson(){
+    return {
+      'userId': userId.toString(), 
+      'userName': userName, 
+      'userContactNumber':userContactNumber, 
+      'userCity': userCity,
+      'userState': userState,
+      'userProfileUrl': userProfileUrl, 
+      'userType': userType,
+      'userpassword': userpassword
+    };
   }
   
   
