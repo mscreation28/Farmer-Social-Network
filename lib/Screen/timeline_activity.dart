@@ -1,8 +1,11 @@
+import 'package:KrishiMitr/models/timeline_event.dart';
+import 'package:KrishiMitr/models/users.dart';
+import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
 import 'package:KrishiMitr/page/edit_timeline_event.dart';
 
 import '../models/dummy_data.dart';
 import '../models/timeline_model.dart';
-import '../models/user_crop.dart';
+import '../models/user_crops.dart';
 import '../page/new_timeline_event.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
@@ -12,27 +15,26 @@ import 'package:intl/intl.dart';
 // ignore: must_be_immutable
 class TimelineActivity extends StatefulWidget { 
   static const routeName = './timeline-activity';
-  List<TimelineModel> activityList;
   String usercropId;
-
+  UserCrop userCrop;
   @override
   _TimelineActivityState createState() => _TimelineActivityState();
 }
 
 class _TimelineActivityState extends State<TimelineActivity> {  
 
-  void editActivity(int index, BuildContext cntx) {
+  void editActivity(TimelineEvent timeline,BuildContext cntx) {
     Navigator.pushNamed(
       cntx,
       EditTimelineEvent.routeName,
       arguments: {
-        'timelineid' : widget.activityList[index].id,        
+        'timeline' :timeline,        
       }
     );
   }
 
-  TimelineTile _buildTimelineTile(int i) {
-    final DateTime date = widget.activityList[i].date;
+  TimelineTile _buildTimelineTile(TimelineEvent timelineEvent,List<TimelineEvent> timelineList) {
+    final DateTime date = timelineEvent.timelineDate;
     final String formattedDate = DateFormat("dd MMMM, yyyy").format(date);
     final DateTime curDate = DateTime.now();
     final _difference = curDate.difference(date).inDays;
@@ -55,7 +57,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
           color: Colors.grey.shade400,
         ),
       ),
-      isLast: widget.activityList.length==i+1,
+      isLast: timelineList.last== timelineEvent,
       startChild: Center(
         child: Container(
           alignment: const Alignment(0.0, -0.50),
@@ -80,7 +82,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [                
                   Text(
-                    widget.activityList[i].title,
+                    timelineEvent.title,
                     style: TextStyle(
                       fontSize: 16,                
                       fontWeight: FontWeight.bold,
@@ -92,7 +94,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
                       padding: EdgeInsets.all(0),
                       constraints: BoxConstraints(),
                       onPressed: () {
-                        editActivity(i, context);
+                        editActivity(timelineEvent, context);
                       }
                     ),
                   )
@@ -101,7 +103,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
             ),
             const SizedBox(height: 4),
             Text(
-              widget.activityList[i].description!=null ? widget.activityList[i].description : "none",
+              timelineEvent.description!=null ?timelineEvent.description : "none",
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.grey.shade700,               
@@ -121,14 +123,13 @@ class _TimelineActivityState extends State<TimelineActivity> {
       ),
     );
   }
-  Widget headTile(String id) {
-    UserCrop crop = dummyCrop.firstWhere((element) => element.id == id); 
-    
+  Widget headTile(List<TimelineEvent> timelineList ) {
+  
     return TimelineTile(
       alignment: TimelineAlign.manual,
       lineXY: 0.2,
       isFirst: true,
-      isLast: widget.activityList.length<=0,
+      isLast: timelineList.length<=0,
       indicatorStyle: IndicatorStyle(        
         width: 10,
         height: 10,
@@ -149,14 +150,14 @@ class _TimelineActivityState extends State<TimelineActivity> {
             Row(
               children: [
                 Text(          
-                  crop.name,
+                 widget.userCrop.cropName,
                   style: TextStyle(
                     fontSize: 20,                         
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(          
-                  "   ( ${crop.variety} )",
+                  "   ( ${ widget.userCrop.breed} )",
                   style: TextStyle(
                     fontSize: 16, 
                     fontWeight: FontWeight.w300                       
@@ -166,14 +167,14 @@ class _TimelineActivityState extends State<TimelineActivity> {
             ),
             const SizedBox(height: 4),          
             Text(          
-              '${crop.taluka}, ${crop.district}, ${crop.state}',
+              '${widget.userCrop.cropTaluka}, ${widget.userCrop.cropCity}, ${widget.userCrop.cropState}',
               style: TextStyle(
                 fontSize: 16,                                      
               ),
             ),
             const SizedBox(height: 4),
             Text(          
-              'Area - ${crop.area} Vigha',
+              'Area - ${widget.userCrop.area} Vigha',
               style: TextStyle(
                 fontSize: 16,                                      
               ),
@@ -184,20 +185,26 @@ class _TimelineActivityState extends State<TimelineActivity> {
     );
   }
 
-  Widget _getTimeline(String usercropId) {
-    List<Widget> list = new List<Widget>();
-    list.add(headTile(usercropId));
-    for(var i = 0; i < widget.activityList.length; i++){
-        list.add(_buildTimelineTile(i));
+  Future<List<TimelineEvent>> getCropTimelines(int userCropId) async
+  {
+    TimelineEventClient timelineEventClient = new TimelineEventClient();
+    return await timelineEventClient.getAllTimelineEvents(userCropId);
+  }
+
+  Widget _getTimeline(List<TimelineEvent> timelineList) {
+    List<Widget> list = [];
+    list.add(headTile(timelineList));
+    for(var i = 0; i < timelineList.length; i++){
+        list.add(_buildTimelineTile(timelineList[i],timelineList));
     }
     return ListView(children: list);
   }
 
   @override
   Widget build(BuildContext context) {    
-    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-    widget.usercropId = routArgs['usercropid'];
-    widget.activityList = dummyTimeline.where((element) => element.usercropid == widget.usercropId).toList();
+    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    widget.userCrop = routArgs['userCrop'] as UserCrop;
+  
 
     return Scaffold(
       appBar: AppBar(
@@ -213,11 +220,21 @@ class _TimelineActivityState extends State<TimelineActivity> {
       ),
       body: Container(     
         padding: EdgeInsets.only(left: 15),                                   
-        child: _getTimeline(widget.usercropId),
+        child: 
+        FutureBuilder(
+                future: getCropTimelines(widget.userCrop.userCropId),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? _getTimeline(snapshot.data as List<TimelineEvent>)
+                      : CircularProgressIndicator();
+                },
+              ) ,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, NewTimelineEvent.routeName);
+          Navigator.pushNamed(context, NewTimelineEvent.routeName,arguments: {
+             'userCrop': widget.userCrop,
+          });
         },
         child: Icon(Icons.add),
       ),
