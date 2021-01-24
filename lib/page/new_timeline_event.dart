@@ -1,3 +1,6 @@
+import 'package:KrishiMitr/models/timeline_event.dart';
+import 'package:KrishiMitr/models/user_crops.dart';
+import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +18,8 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;  
   DateTime _date = DateTime.now();
   String name;
+  TimelineEvent timelineEvent = new TimelineEvent();
+  UserCrop userCrop;
 
   void _presentDatePicker(BuildContext context) {
     showDatePicker(
@@ -33,10 +38,15 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
         return;
       }
       setState(() {        
-        _date = value;
+        timelineEvent.timelineDate = value;
         print(_date);
       });
     });
+  }
+  void addNewTimeline() async{
+    TimelineEventClient timelineEventClient = new TimelineEventClient();
+    timelineEvent.userCropId = userCrop.userCropId;
+    await timelineEventClient.addTimelineEvent(timelineEvent);
   }
 
   // Widget showCupertinoDate(BuildContext context) {
@@ -62,6 +72,9 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
 
   @override
   Widget build(BuildContext context) {
+    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    userCrop = routArgs['userCrop'] as UserCrop;
+    timelineEvent.timelineDate = _date;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -70,7 +83,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-
+                addNewTimeline();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
@@ -100,7 +113,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Enter event title*'),
                   validator: (value) => value.isEmpty ? 'event title is required' : null,
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => timelineEvent.title = value,
                 ),
                 SizedBox(height: 10),
                 InkWell(
@@ -136,7 +149,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
                 TextFormField(
                   maxLines: null,
                   decoration: InputDecoration(labelText: 'Enter Description'),                  
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => timelineEvent.description= value,
                   keyboardType: TextInputType.multiline,
                 ),
               ],

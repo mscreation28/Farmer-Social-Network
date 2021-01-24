@@ -1,5 +1,7 @@
-import 'package:KrishiMitr/models/dummy_data.dart';
-import 'package:KrishiMitr/models/user_crop.dart';
+
+import 'package:KrishiMitr/models/crops.dart';
+import 'package:KrishiMitr/models/user_crops.dart';
+import 'package:KrishiMitr/network/clients/UserCropClient.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -19,11 +21,11 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
   final _formKey = GlobalKey<FormState>();
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   String usercropId;
-  UserCrop crop;
-  String selectCrop;
+  UserCrop userCrop;
+  String selectCropId;
   DateTime _date = DateTime.now();
   String name;
-
+  List<Crop> cropList;
   
   void _presentDatePicker(BuildContext context) {
     showDatePicker(
@@ -42,19 +44,29 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
         return;
       }
       setState(() {        
-        _date = value;
+        userCrop.cropDate = value;
         print(_date);
       });
     });
   }
 
+  void updateUserCrop() async{
+    UserCropClient userCropClient = new UserCropClient();
+    await userCropClient.updateUserCrop(userCrop); 
+  }
+
+  void deleteUserCrop() async{
+    UserCropClient userCropClient = new UserCropClient();
+    await userCropClient.deleteUserCrop(userCrop.userCropId);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, String>;
-    usercropId = routArgs['usercropid'];
-    crop = dummyCrop.firstWhere((element) => element.id == usercropId);
-    selectCrop = croplist[0];
-    _date = crop.date;
+    final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    userCrop = routeArgs['userCrop'] as UserCrop;
+    cropList = routeArgs['cropList'] as List<Crop>;
+    selectCropId = croplist[0];
+    _date = userCrop.cropDate;
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +74,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
           IconButton(
             icon: Icon(Icons.delete),
             onPressed: () {
-              
+              deleteUserCrop();
             }
           ),
           IconButton(
@@ -70,7 +82,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-
+                updateUserCrop();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
@@ -98,63 +110,64 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
             child: Column(
               children: [
                 DropdownButtonFormField<String>(                  
-                  value: selectCrop,
+                  value: userCrop.cropId.toString(),
                   decoration: InputDecoration(
                     labelText: 'Select your crop*'
                   ),
                   // elevation: 20,
                   onChanged: (crop) =>
-                      setState(() => selectCrop = crop),
+                      setState(()  {selectCropId = crop; userCrop.cropId = int.parse(crop);  }),
                   validator: (value) => value == null ? 'field required' : null,
-                  items: croplist.map<DropdownMenuItem<String>>((String value) {
+                  items: cropList.map<DropdownMenuItem<String>>((Crop crop) {
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: crop.cropId.toString(),
+                      child: Text(crop.cropName),
                     );
                   }).toList(),
+                  
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  initialValue: crop.variety,
+                  initialValue: userCrop.breed,
                   decoration: InputDecoration(labelText: 'Enter crop variety*'),
                   validator: (value) => value.isEmpty ? 'Crop variety is required' : null,
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => userCrop.breed = value,
                 ),
                 SizedBox(height: 10),
                 Row(
                   children: [
                     Expanded(
                       child: TextFormField(
-                        initialValue: crop.taluka,
+                        initialValue: userCrop.cropTaluka,
                         decoration: InputDecoration(labelText: 'Enter Taluka*'),
                         validator: (value) => value.isEmpty ? 'Taluka is required field' : null,
-                        onSaved: (value) => name = value,
+                        onSaved: (value) => userCrop.cropTaluka = value,
                       ),
                     ),
                     SizedBox(width: 15),
                     Expanded(
                       child: TextFormField(
-                        initialValue: crop.district,
+                        initialValue: userCrop.cropCity,
                         decoration: InputDecoration(labelText: 'Enter District*',),
                         validator: (value) => value.isEmpty ? 'District is required' : null,
-                        onSaved: (value) => name = value,                        
+                        onSaved: (value) => userCrop.cropCity= value,                        
                       ),
                     ),
                   ],
                 ),              
                 SizedBox(height: 10),
                 TextFormField(
-                  initialValue: crop.state,
+                  initialValue: userCrop.cropState,
                   decoration: InputDecoration(labelText: 'Enter State*'),
                   validator: (value) => value.isEmpty ? 'State is required' : null,
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => userCrop.cropState = value,
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  initialValue: crop.area.toString(),
+                  initialValue: userCrop.area.toString(),
                   decoration: InputDecoration(labelText: 'Enter Area*'),
                   validator: (value) => value.isEmpty ? 'Area is required' : null,
-                  onSaved: (value) => name = value,
+                  onSaved: (value) => userCrop.area = double.parse(value),
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 10),
