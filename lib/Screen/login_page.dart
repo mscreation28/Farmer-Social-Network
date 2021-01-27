@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:KrishiMitr/Screen/tab_page.dart';
 import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
+import 'package:KrishiMitr/network/clients/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
+import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './signup_page.dart';
 import '../Widget/titleText.dart';
 import 'package:flutter/material.dart';
@@ -126,7 +131,17 @@ class _LoginPageState extends State<LoginPage> {
     IUserClient userClient = new UserClient();
     user.userContactNumber = userContactNumberController.text;
     user.userpassword = userPasswordController.text;
-    userClient.loginUser(user);
+   
+    Response response = await  userClient.loginUser(user);
+    if(response.statusCode==200){
+      var json = jsonDecode(response.body);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setInt(Utils.USER_ID, json['userId']);
+      prefs.setString(Utils.TOKEN, json['token']);
+
+      Navigator.of(context).pushNamed(TabScreen.routeName);
+
+    }
   }
 
   @override

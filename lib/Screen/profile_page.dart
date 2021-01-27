@@ -4,9 +4,11 @@ import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/CropClient.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:KrishiMitr/network/clients/UserCropClient.dart';
+import 'package:KrishiMitr/network/clients/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../page/edit_profile.dart';
 
@@ -25,7 +27,27 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  static int userId = 4;
+  static int userId;
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    autoLogIn();
+  } 
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int userIdData =  prefs.getInt(Utils.USER_ID);
+
+    if (userIdData != null) {
+      setState(() {
+        isLoggedIn = true;
+        userId= userIdData;
+      });
+      return;
+    }
+  }
+
 
   void gotoEditProfile(User user) {
     Navigator.pushNamed(context, EditProfile.routeName,
@@ -151,10 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
+
 
   Widget getUserCropListWidget(List<UserCrop> userCropList) {
     List<Widget> list = [];
@@ -171,7 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   //get specific user
-  Future<User> getUser(int userId) async {
+  Future<User> getUser() async {
     IUserClient userClient = new UserClient();
     return await userClient.getSpecificUser(userId);
   }
@@ -198,13 +217,13 @@ class _ProfilePageState extends State<ProfilePage> {
       // appBar: AppBar(
 
       // ),
-      body: SingleChildScrollView(
+      body:isLoggedIn?SingleChildScrollView(
         child: Container(
             color: Colors.grey.shade100,
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               FutureBuilder(
-                  future: getUser(userId),
+                  future: getUser(),
                   builder: (context, snapshot) {
                     return snapshot.hasData
                         ? _headSection(snapshot.data as User)
@@ -222,11 +241,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               )
             ])),
-      ),
+      ):Text("not logged In"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, NewCropTimeline.routeName,
-              arguments: {'cropList': widget.cropList});
+              arguments: {'cropList': widget.cropList,'userId':userId});
         },
         child: Icon(
           Icons.add,

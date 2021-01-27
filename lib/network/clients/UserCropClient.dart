@@ -3,19 +3,28 @@ import 'dart:convert';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Utils.dart';
 
 class UserCropClient implements IUserCropClient {
   static const String USER_CROP = "userCrops";
 
+  Future<String> getTokenString() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString(Utils.TOKEN);
+  }
+
   @override
   void addUserCrop(UserCrop userCrop) async {
+    String token = await getTokenString();
     try {
       final response = await http.post(
         '${Utils.BASE_URL}$USER_CROP',
         headers: <String, String>{
-          'Content-type': 'application/json; charset=UTF-8'
+          'Content-type': 'application/json; charset=UTF-8',
+          'Authorization':'Bearer $token'
+          
         },
         body: jsonEncode(userCrop.toJson()),
       );
@@ -32,19 +41,26 @@ class UserCropClient implements IUserCropClient {
 
   @override
   void deleteUserCrop(int userCropId) async {
-    var response = await http.delete('${Utils.BASE_URL}$USER_CROP/$userCropId');
+    String token = await getTokenString();
+    var response = await http.delete('${Utils.BASE_URL}$USER_CROP/$userCropId',headers: {
+      'Authorization':'Bearer $token'
+    });
     print(jsonEncode(response.body));
-    if(response.statusCode==200){
+    if (response.statusCode == 200) {
       print(jsonEncode(response.body));
-    }else{
+    } else {
       throw Exception("Delete Unsuccesfull");
     }
   }
 
   @override
   Future<List<UserCrop>> getAllUserCrop(int userCropId) async {
+    String token = await getTokenString();
     try {
-      final response = await http.get('${Utils.BASE_URL}$USER_CROP/$userCropId');
+      final response =
+          await http.get('${Utils.BASE_URL}$USER_CROP/$userCropId',headers: {
+            'Authorization':'Bearer $token',
+          });
       print(jsonDecode(response.body));
       if (response.statusCode == 200) {
         List<UserCrop> userCropList = [];
@@ -70,14 +86,19 @@ class UserCropClient implements IUserCropClient {
 
   @override
   void updateUserCrop(UserCrop userCrop) async {
-    var response = await http.patch('${Utils.BASE_URL}$USER_CROP/${userCrop.userCropId}',headers: <String, String>{
-      'Content-type': 'application/json; charset=UTF-8'
-    },body: jsonEncode(userCrop.toJson()) );
+    String token = await getTokenString();
+    var response = await http.patch(
+        '${Utils.BASE_URL}$USER_CROP/${userCrop.userCropId}',
+        headers: <String, String>{
+          'Content-type': 'application/json; charset=UTF-8',
+          'Authorization':'Bearer $token',
+        },
+        body: jsonEncode(userCrop.toJson()));
     print(jsonDecode(response.body));
-     if (response.statusCode == 200) {
-        print(jsonDecode(response.body));
-      } else {
-        throw Exception("Error while addding new crop");
-      }
+    if (response.statusCode == 200) {
+      print(jsonDecode(response.body));
+    } else {
+      throw Exception("Error while addding new crop");
+    }
   }
 }

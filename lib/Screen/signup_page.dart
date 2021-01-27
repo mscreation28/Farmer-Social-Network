@@ -124,7 +124,7 @@ class _SignupPageState extends State<SignupPage> {
     user.userState = userStateController.text;
     user.userpassword =  userPasswordController.text;
     
-    bool isSuccessfull =  await userClient.registerUser(user);
+    await userClient.registerUser(user);
   }
 
   @override

@@ -3,7 +3,7 @@ import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
 import 'package:KrishiMitr/page/edit_timeline_event.dart';
 
-import '../models/dummy_data.dart';
+
 import '../models/timeline_model.dart';
 import '../models/user_crops.dart';
 import '../page/new_timeline_event.dart';
@@ -167,7 +167,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
             ),
             const SizedBox(height: 4),          
             Text(          
-              '${widget.userCrop.cropTaluka}, ${widget.userCrop.cropCity}, ${widget.userCrop.cropState}',
+              '${widget.userCrop.croptaluka}, ${widget.userCrop.cropCity}, ${widget.userCrop.cropState}',
               style: TextStyle(
                 fontSize: 16,                                      
               ),
