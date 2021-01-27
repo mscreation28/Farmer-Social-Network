@@ -1,5 +1,8 @@
 import 'package:KrishiMitr/Screen/login_page.dart';
 import 'package:KrishiMitr/Widget/titleText.dart';
+import 'package:KrishiMitr/models/users.dart';
+import 'package:KrishiMitr/network/clients/UserClient.dart';
+import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -9,8 +12,14 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  User user = new User();
+  TextEditingController userNameController = new TextEditingController();
+  TextEditingController userContactNumberController = new TextEditingController();
+  TextEditingController userCityController = new TextEditingController();
+  TextEditingController userStateController = new TextEditingController();
+  TextEditingController userPasswordController = new TextEditingController();
 
-   Widget _inputArea(String inputText,{bool isPassword = false, bool isPhone = false}) {
+   Widget _inputArea(String inputText,TextEditingController controller,{bool isPassword = false, bool isPhone = false}) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 7),
       child: Column(
@@ -31,7 +40,8 @@ class _SignupPageState extends State<SignupPage> {
               filled: true,
               labelText: "Enter $inputText",
               isDense: true              
-            ),            
+            ), 
+            controller: controller,           
             keyboardType: isPhone ? TextInputType.phone : TextInputType.text,            
           )
         ],
@@ -106,6 +116,17 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  void registerUser() async{
+    IUserClient userClient = UserClient();
+    user.userName = userNameController.text;
+    user.userCity = userCityController.text;
+    user.userContactNumber = userContactNumberController.text;
+    user.userState = userStateController.text;
+    user.userpassword =  userPasswordController.text;
+    
+    bool isSuccessfull =  await userClient.registerUser(user);
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -125,28 +146,28 @@ class _SignupPageState extends State<SignupPage> {
               SizedBox(
                 height: height * 0.04,
               ),
-              _inputArea("Name"),
-              _inputArea("Phone Number",isPhone: true),
+              _inputArea("Name",userNameController),
+              _inputArea("Contact Number",userContactNumberController, isPhone: true),
               Row(                
                 children: [
                   Container( 
                     margin: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
                     width: MediaQuery.of(context).size.width*0.42,
-                    child: _inputArea("City"),
+                    child: _inputArea("City",userCityController)
                   ),
                   Container( 
                     width: MediaQuery.of(context).size.width*0.42,
-                    child: _inputArea("State"),
+                    child: _inputArea("State",userStateController),
                   ),
                 ],
               ),
               
-              _inputArea("Password",isPassword: true),
+              _inputArea("Password",userPasswordController, isPassword: true),
 
               SizedBox(
                 height: 20,
               ),
-              _signupButton(),
+              GestureDetector(child: _signupButton(),onTap: registerUser,),
               SizedBox(height: height * .03),
               _label()
             ]

@@ -10,7 +10,7 @@ class UserClient implements IUserClient {
     static const String LOGIN_URL = "login";
 
   @override
-  void registerUser(User user) async {
+  Future<bool> registerUser(User user) async {
     var response = await http.post('${Utils.BASE_URL}$USER_URL',
         headers: <String, String>{
           'Content-type': 'application/json; charset=UTF-8'
@@ -19,8 +19,9 @@ class UserClient implements IUserClient {
     print(jsonDecode(response.body));
     if (response.statusCode == 201) {
       print(jsonDecode(response.body));
+      return true;
     } else {
-      throw Exception("Error while adding new crop");
+      return false;
     }
   }
     @override
@@ -30,7 +31,7 @@ class UserClient implements IUserClient {
           'Content-type': 'application/json; charset=UTF-8'
         },
         body: jsonEncode(user.toJson()));
-    print(jsonDecode(response.body));
+      print(jsonDecode(response.body));
     if (response.statusCode == 200) {
       print(jsonDecode(response.body));
     } else {
