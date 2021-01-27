@@ -1,5 +1,7 @@
 // import 'package:KrishiMitr/Screen/home_page.dart';
 
+import 'package:KrishiMitr/Screen/profile_page.dart';
+
 import './timeline_updates.dart';
 import '../Widget/titleText.dart';
 
@@ -27,8 +29,8 @@ class _TabScreenState extends State<TabScreen> {
   @override
   void initState() {
     _pages = [
-      {'page': TimelineUpdate()},
       {'page': HomePage()},
+      {'page': ProfilePage()},
     ];
     super.initState();
   }

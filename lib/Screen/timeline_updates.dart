@@ -4,7 +4,7 @@ import '../models/timeline_model.dart';
 import 'package:flutter/material.dart';
 
 class TimelineUpdate extends StatelessWidget {
-  
+  static const routeName = "TimeLineUpdate";
   List<TimelineModel> timelines = dummyTimeline;  
 
   @override
