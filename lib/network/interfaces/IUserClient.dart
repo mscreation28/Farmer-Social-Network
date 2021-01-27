@@ -6,5 +6,6 @@ abstract class IUserClient{
   Future<User> getSpecificUser(int id);
   void deleteUser(int id);
   void updateUser(User user);
-  void addUser(User user);
+  void registerUser(User user);
+  void loginUser(User user);
 }
