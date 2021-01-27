@@ -138,10 +138,10 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
                   children: [
                     Expanded(
                       child: TextFormField(
-                        initialValue: userCrop.cropTaluka,
+                        initialValue: userCrop.croptaluka,
                         decoration: InputDecoration(labelText: 'Enter Taluka*'),
                         validator: (value) => value.isEmpty ? 'Taluka is required field' : null,
-                        onSaved: (value) => userCrop.cropTaluka = value,
+                        onSaved: (value) => userCrop.croptaluka = value,
                       ),
                     ),
                     SizedBox(width: 15),

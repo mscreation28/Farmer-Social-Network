@@ -1,4 +1,4 @@
-import 'package:KrishiMitr/models/dummy_data.dart';
+
 import 'package:KrishiMitr/models/timeline_event.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';

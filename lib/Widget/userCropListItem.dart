@@ -3,7 +3,7 @@ import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/page/edit_crop_timeline.dart';
 
-import '../models/dummy_data.dart';
+
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
@@ -63,7 +63,7 @@ class UserCropList extends StatelessWidget {
               Text(userCrop.breed),
               SizedBox(height: 5),
               Text(
-                  '${userCrop.cropTaluka}, ${userCrop.cropCity}, ${userCrop.cropState}'),
+                  '${userCrop.croptaluka}, ${userCrop.cropCity}, ${userCrop.cropState}'),
               SizedBox(height: 5),
               Text('Area - ${userCrop.area} Vigha'),
               SizedBox(height: 5),

@@ -1,9 +1,14 @@
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
+import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/CropClient.dart';
+import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:KrishiMitr/network/clients/UserCropClient.dart';
+import 'package:KrishiMitr/network/clients/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
+import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../page/edit_profile.dart';
 
@@ -17,22 +22,39 @@ import 'package:google_fonts/google_fonts.dart';
 class ProfilePage extends StatefulWidget {
   static const routeName = "./profile-page";
   List<Crop> cropList;
-
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  static int userId = 4;
+  static int userId;
+  bool isLoggedIn = false;
 
-  void gotoEditProfile() {
-    Navigator.pushNamed(
-      context,
-      EditProfile.routeName,
-    );
+  @override
+  void initState() {
+    super.initState();
+    autoLogIn();
+  } 
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int userIdData =  prefs.getInt(Utils.USER_ID);
+
+    if (userIdData != null) {
+      setState(() {
+        isLoggedIn = true;
+        userId= userIdData;
+      });
+      return;
+    }
   }
 
-  Widget _headSection() {
+
+  void gotoEditProfile(User user) {
+    Navigator.pushNamed(context, EditProfile.routeName,
+        arguments: {'user': user});
+  }
+
+  Widget _headSection(User user) {
     return Container(
       // height: 230,
       child: Stack(
@@ -55,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     children: [
                       FittedBox(
                         child: Text(
-                          'Shyam Makwana',
+                          user.userName,
                           style: GoogleFonts.cairo(
                             textStyle: Theme.of(context).textTheme.headline6,
                             fontSize: 25,
@@ -66,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       FittedBox(
                         child: Text(
-                          'Junagadh, Gujarat',
+                          '${user.userCity}, ${user.userState}',
                           style: GoogleFonts.cairo(
                               textStyle: Theme.of(context).textTheme.caption,
                               fontSize: 15,
@@ -79,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             materialTapTargetSize:
                                 MaterialTapTargetSize.shrinkWrap,
                             onPressed: () {
-                              gotoEditProfile();
+                              gotoEditProfile(user);
                             },
                             padding: EdgeInsets.only(right: 17),
                             minWidth: 0,
@@ -151,11 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  @override
-  void initState(){
-    super.initState();
 
-  }
 
   Widget getUserCropListWidget(List<UserCrop> userCropList) {
     List<Widget> list = [];
@@ -165,15 +183,26 @@ class _ProfilePageState extends State<ProfilePage> {
     return new Column(children: list);
   }
 
+  //get all crops
   Future<List<Crop>> getCropList() async {
     ICropClient cropClient = new CropClient();
     return cropClient.getAllCrops();
   }
 
+  //get specific user
+  Future<User> getUser() async {
+    IUserClient userClient = new UserClient();
+    return await userClient.getSpecificUser(userId);
+  }
+
   Future<List<UserCrop>> getUserCropList() async {
+    //first get crop list
     widget.cropList = await getCropList();
+
+    //then fetch user crop
     UserCropClient userCropClient = new UserCropClient();
-    List<UserCrop> userCropList = await userCropClient.getAllUserCrop(userId);
+    List<UserCrop> userCropList =
+        await userCropClient.getAllUserCrop(userId);
     userCropList.forEach((userCrop) {
       userCrop.cropName = widget.cropList
           .firstWhere((crop) => crop.cropId == userCrop.cropId)
@@ -188,12 +217,18 @@ class _ProfilePageState extends State<ProfilePage> {
       // appBar: AppBar(
 
       // ),
-      body: SingleChildScrollView(
+      body:isLoggedIn?SingleChildScrollView(
         child: Container(
             color: Colors.grey.shade100,
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _headSection(),
+              FutureBuilder(
+                  future: getUser(),
+                  builder: (context, snapshot) {
+                    return snapshot.hasData
+                        ? _headSection(snapshot.data as User)
+                        : CircularProgressIndicator();
+                  }),
               SizedBox(
                 height: 10,
               ),
@@ -206,16 +241,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               )
             ])),
-      ),
+      ):Text("not logged In"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            NewCropTimeline.routeName,
-            arguments: {
-              'cropList':widget.cropList
-            }
-          );
+          Navigator.pushNamed(context, NewCropTimeline.routeName,
+              arguments: {'cropList': widget.cropList,'userId':userId});
         },
         child: Icon(
           Icons.add,
