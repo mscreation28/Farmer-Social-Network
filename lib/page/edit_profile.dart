@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:KrishiMitr/models/users.dart';
+import 'package:KrishiMitr/network/clients/UserClient.dart';
+import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:KrishiMitr/Widget/imageDialog.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +19,7 @@ class _EditProfileState extends State<EditProfile> {
   final _formKey = GlobalKey<FormState>();
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   String name;
+  User user;
 
   Future getImage(String action) async {      
     final selectedImage = action != "Gallery"
@@ -66,8 +70,15 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
+  void updateUser() async{
+    IUserClient userClient = new UserClient();
+    userClient.updateUser(user);
+  }
+
   @override
   Widget build(BuildContext context) {
+    var routeArgs = ModalRoute.of(context).settings.arguments as Map<String,dynamic>;
+    user = routeArgs['user'] as User;
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
@@ -77,7 +88,7 @@ class _EditProfileState extends State<EditProfile> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-
+                updateUser();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
@@ -148,14 +159,14 @@ class _EditProfileState extends State<EditProfile> {
                   child: Column(
                     children: [
                       TextFormField(
-                        initialValue: "Shyam Makwana",
+                        initialValue: user.userName,
                         decoration: InputDecoration(labelText: 'Name'),
                         validator: (value) => value.isEmpty ? 'Name is required' : null,
-                        onSaved: (value) => name = value,
+                        onSaved: (value) => user.userName = value,
                       ),
                       SizedBox(height: 10),
                       TextFormField(
-                        initialValue: "6354088874",
+                        initialValue: user.userContactNumber,
                         decoration: InputDecoration(labelText: 'Mobile Number'),
                         validator: (value) => value.isEmpty ? 'Mobile number is required' : null,
                         onSaved: (value) => name = value,
@@ -165,29 +176,29 @@ class _EditProfileState extends State<EditProfile> {
                         children: [
                           Expanded(
                             child: TextFormField(
-                              initialValue: 'Junagadh',
+                              initialValue: user.userCity,
                               decoration: InputDecoration(labelText: 'City'),
                               validator: (value) => value.isEmpty ? 'City is required' : null,
-                              onSaved: (value) => name = value,
+                              onSaved: (value) => user.userCity = value,
                             ),
                           ),
                           SizedBox(width: 15),
                           Expanded(
                             child: TextFormField(
-                              initialValue: 'Gujarat',
+                              initialValue: user.userState,
                               decoration: InputDecoration(labelText: 'State',),
                               validator: (value) => value.isEmpty ? 'State is required' : null,
-                              onSaved: (value) => name = value,                        
+                              onSaved: (value) => user.userState = value,                        
                             ),
                           ),
                         ],
                       ),
                       TextFormField(
-                        initialValue: "sdm89055",
+                        initialValue: user.userpassword,
                         obscureText: true,
                         decoration: InputDecoration(labelText: 'Password'),
                         validator: (value) => value.isEmpty ? 'Password is required' : null,
-                        onSaved: (value) => name = value,                        
+                        onSaved: (value) => user.userpassword = value,                        
                       ),
                     ]
                   )

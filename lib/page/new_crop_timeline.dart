@@ -18,7 +18,7 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
   String selectCropId;
   DateTime _date = DateTime.now();
   List<Crop> cropList;
-
+  int userId;
 
 
   void _presentDatePicker(BuildContext context) {
@@ -50,7 +50,7 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
   void addUserCrop() async{
     UserCropClient userCropClient = new UserCropClient();
     userCrop.cropId =  int.parse(selectCropId);
-    userCrop.userId = 4;
+    userCrop.userId = userId;
     userCropClient.addUserCrop(this.userCrop);
   }
 
@@ -58,6 +58,8 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
   Widget build(BuildContext context) {
     var routeArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     cropList = routeArgs['cropList'] as List<Crop>;
+    userId = routeArgs['userId'] as int;
+
     userCrop.cropDate = _date;
     return Scaffold(
       appBar: AppBar(
@@ -124,7 +126,7 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
                       child: TextFormField(
                         decoration: InputDecoration(labelText: 'Enter Taluka*'),
                         validator: (value) => value.isEmpty ? 'Taluka is required field' : null,
-                        onSaved: (value) => userCrop.cropTaluka = value,
+                        onSaved: (value) => userCrop.croptaluka = value,
                       ),
                     ),
                     SizedBox(width: 15),

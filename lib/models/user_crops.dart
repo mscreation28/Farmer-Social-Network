@@ -10,7 +10,7 @@ class UserCrop {
   DateTime cropDate = new DateTime.now();
   String cropCity;
   String cropState;
-  String cropTaluka;
+  String croptaluka;
   String breed;
   double area;
   String cropName;
@@ -22,7 +22,7 @@ class UserCrop {
     this.area,
     this.cropCity,
     this.cropDate,
-    this.cropTaluka,
+    this.croptaluka,
     this.cropId,
     this.userId,
     this.cropName
@@ -35,7 +35,7 @@ class UserCrop {
         area: double.parse(json['area']),
         breed: json['breed'],
         cropCity: json['cropCity'],
-        cropTaluka: json['croptaluka'],
+        croptaluka: json['croptaluka'],
         cropDate: DateFormat('yyyy-M-d').parse((json['cropDate'])),
         cropId: json['cropId'],
         userId: json['userId']);
@@ -46,7 +46,7 @@ class UserCrop {
       "userCropId": userCropId,
       "cropState": cropState,
       "cropCity": cropCity,
-      "croptaluka": cropTaluka,
+      "croptaluka": croptaluka,
       "area": area,
       "breed": breed,
       "userId": userId,
