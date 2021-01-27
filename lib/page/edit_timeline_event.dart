@@ -1,4 +1,5 @@
 
+import 'package:KrishiMitr/Widget/delete_dialog_event.dart';
 import 'package:KrishiMitr/models/timeline_event.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
@@ -19,8 +20,9 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;  
   DateTime _date = DateTime.now();
   String timelineId;
- TimelineEvent timelineEvent;
+  TimelineEvent timelineEvent;
   String name;
+  Function refreshState;
 
   void _presentDatePicker(BuildContext context) {
     showDatePicker(
@@ -66,20 +68,23 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
   //     )
   //   );
   // }
-  void editTimeLineEvent() async{
+  Future<void> editTimeLineEvent() async{
     TimelineEventClient timelineEventClient  = new TimelineEventClient();
-    timelineEventClient.updateTimelineEvent(timelineEvent);
+    await timelineEventClient.updateTimelineEvent(timelineEvent);
+    refreshState();
   }
 
-  void deleteTimeLineEvent() async{
+  Future<void> deleteTimeLineEvent() async{
     TimelineEventClient timelineEventClient = new TimelineEventClient();
-    timelineEventClient.deleteTimelineEvent(timelineEvent.timelineId);
+    await timelineEventClient.deleteTimelineEvent(timelineEvent.timelineId);
+    refreshState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, TimelineEvent>;
-    timelineEvent = routArgs['timeline'];
+    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    timelineEvent = routArgs['timeline'] as TimelineEvent;
+    refreshState = routArgs['refresh'] as Function;
     _date = timelineEvent.timelineDate;
   
     return Scaffold(
@@ -87,16 +92,19 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () {
-              deleteTimeLineEvent();
-            }
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) {
+                return DeleteDialogEvent(deleteTimeline: deleteTimeLineEvent,);
+              },
+            )            
           ),
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.check),
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                editTimeLineEvent();
+                editTimeLineEvent().whenComplete(() => Navigator.pop(context));
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation

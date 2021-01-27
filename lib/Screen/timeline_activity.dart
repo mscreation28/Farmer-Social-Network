@@ -28,7 +28,8 @@ class _TimelineActivityState extends State<TimelineActivity> {
       cntx,
       EditTimelineEvent.routeName,
       arguments: {
-        'timeline' :timeline,        
+        'timeline' :timeline,
+        'refresh' :refresh,
       }
     );
   }
@@ -185,6 +186,12 @@ class _TimelineActivityState extends State<TimelineActivity> {
     );
   }
 
+  void refresh() {
+    setState(() {
+      getCropTimelines(widget.userCrop.userCropId);
+    });
+  }
+
   Future<List<TimelineEvent>> getCropTimelines(int userCropId) async
   {
     TimelineEventClient timelineEventClient = new TimelineEventClient();
@@ -234,6 +241,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
         onPressed: () {
           Navigator.pushNamed(context, NewTimelineEvent.routeName,arguments: {
              'userCrop': widget.userCrop,
+             'refresh': refresh,
           });
         },
         child: Icon(Icons.add),
