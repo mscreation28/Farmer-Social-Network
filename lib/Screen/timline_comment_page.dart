@@ -70,6 +70,41 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                 ],
               ),
               SizedBox(height: 7,),
+              isReply 
+                    ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 7),
+                      margin: EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Theme.of(context).primaryColorLight.withOpacity(0.5)
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Replying to @$replyCommentName',
+                            style: TextStyle(
+                              color: Theme.of(context).primaryColorDark,                              
+                            ),
+                          ),
+                          IconButton(
+                            constraints: BoxConstraints(),
+                            padding: EdgeInsets.all(0),
+                            icon: Icon(
+                              Icons.close,
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isReply = false;
+                              });
+                              replyCommentName = "";
+                              replyCommentId = null;
+                            }
+                          )
+                        ],
+                      )
+                    ) : SizedBox(width: 0,),
               Row(
                 children: [
                   // Container(
@@ -87,7 +122,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                   //       image: AssetImage("assets/images/farmer.png"),
                   //     )
                   //   ),                   
-                  // ),
+                  // ),                  
                   SizedBox(
                     width: 7,
                   ),
@@ -179,9 +214,13 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
   static int userId;
   bool isLoggedIn = false;
   Comment comment = new Comment();
+  Reply reply = new Reply();
   CommentClient commentClient = new CommentClient();
   UserClient userClient= new UserClient();
   ReplyClient replyClient = new ReplyClient();
+  bool isReply=false;
+  int replyCommentId;
+  String replyCommentName;
 
   @override
   void initState() {
@@ -213,12 +252,18 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
   }
 
   void addNewComment() async {
-    comment.commentDate = DateTime.now();
-    comment.userId = userId;
-    comment.postId = widget.postId;
-    comment.comment = widget.commentController.text;
-    widget.commentController.clear();
-    await commentClient.addComment(comment);
+    String inputText = widget.commentController.text;    
+    if(isReply)    
+      addNewReply(replyCommentId,inputText);    
+    else
+    {
+      comment.commentDate = DateTime.now();
+      comment.userId = userId;
+      comment.postId = widget.postId;
+      comment.comment = widget.commentController.text;
+      widget.commentController.clear();
+      await commentClient.addComment(comment);
+    }
   }
 
   Widget getCommentWidget(List<Comment> commentList) {
@@ -301,10 +346,11 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                 height: 0,    
                 minWidth: 0,            
                 onPressed: () {
-                  //
-                  //
-                  //
-                  //
+                  replyCommentId=comment.commentId;                  
+                  replyCommentName=uname;
+                  setState(() {
+                    isReply = true;
+                  });                  
                 },
                 materialTapTargetSize:
                   MaterialTapTargetSize.shrinkWrap,
@@ -336,9 +382,18 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
       children: list
     );
   }
-  void addNewReply(int commentid) {
-
+  void addNewReply(int commentid, String replyText) async {
+    reply.commentId = commentid;
+    reply.reply = replyText;
+    reply.replyDate = DateTime.now();
+    reply.userId = userId;
+    widget.commentController.text="";
+    await replyClient.addReply(reply);
+    setState(() {
+      isReply=false;
+    });
   }
+
   Widget replyLayout(Reply reply) {
     return FutureBuilder(
       future: getUserName(reply.userId),
@@ -412,66 +467,5 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
         ),
       ]
     );
-  }
-
-  Widget replyInput(Comment comment) {
-    return Row(
-      children: [
-        Expanded(                                                  
-          child: TextField( 
-            controller: widget.commentController, 
-            style: TextStyle(
-              height: 1,                      
-            ),                                     
-            decoration: InputDecoration(
-              contentPadding: EdgeInsets.all(10),
-              labelText: 'Reply..',
-              hintText: 'Add a reply...',
-              enabledBorder: OutlineInputBorder(                        
-                borderSide: BorderSide(
-                  color: Colors.grey.shade600,
-                  width: 1.5
-                ),  
-                borderRadius: BorderRadius.circular(25)                     
-              ),
-              focusedBorder: OutlineInputBorder(                        
-                borderSide: BorderSide(
-                  color: Colors.grey.shade600,
-                  width: 1.5
-                ),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              // prefixIcon: Icon(Icons.comment_outlined)                      
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 7,
-        ),
-        Container(
-          // color: Theme.of(context).primaryColorLight,
-          height: 45,
-          width: 45,                                      
-          decoration: BoxDecoration(
-            color: Theme.of(context).primaryColorLight,
-            shape: BoxShape.circle,                        
-            // border: Border.all(
-            //   color: Theme.of(contexrt).primaryColorDark,
-            //   width: 1.5,
-            // ),
-          ),
-          child: IconButton(
-            icon: Icon(
-              Icons.send_sharp,
-              // color: Colors.grey.shade700,
-              color: Theme.of(context).primaryColorDark,
-            ), 
-            onPressed: () {
-              addNewReply(comment.commentId);
-            },                
-          ),
-        )
-      ]
-    );
-  }
+  }  
 }
