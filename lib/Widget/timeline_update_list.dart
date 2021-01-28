@@ -1,13 +1,15 @@
 import 'package:KrishiMitr/Screen/timeline_updates.dart';
+import 'package:KrishiMitr/models/crops.dart';
+import 'package:KrishiMitr/network/clients/CropClient.dart';
+import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
 import 'package:flutter/material.dart';
 
 class TimelineUpdateList extends StatelessWidget {
-  Widget _buildCropList(BuildContext context) {
-    final croplist = [
-      'wheat1','groundnut1','corn1','wheat1','groundnut1','corn1','wheat1','groundnut1','corn1'
-    ];
+  Widget _buildCropList(BuildContext context, List<Crop> croplist) {
+
     List<Widget> list = [];
     for (var i = 0; i < croplist.length; i++) {
+      print(croplist[i].cropName);
       list.add(
         FlatButton( 
           padding: EdgeInsets.symmetric(horizontal: 5),        
@@ -15,6 +17,10 @@ class TimelineUpdateList extends StatelessWidget {
             Navigator.pushNamed(
               context,
               TimelineUpdate.routeName,
+              arguments: {
+                'cropid' : croplist[i].cropId,
+                'cropname' : croplist[i].cropName,
+              }
             );
           },
           materialTapTargetSize:
@@ -22,10 +28,11 @@ class TimelineUpdateList extends StatelessWidget {
           child: Align(
             alignment: Alignment.topLeft,
             child: Text(
-              '# ${croplist[i]}',
+              '# ${croplist[i].cropName}',
               style: TextStyle(
-                color: Colors.grey.shade800,  
-                fontSize: 15            
+                color: Colors.grey.shade800, 
+                fontWeight: FontWeight.w600,
+                fontSize: 16            
               ),
               textAlign: TextAlign.right,
             ),
@@ -33,15 +40,23 @@ class TimelineUpdateList extends StatelessWidget {
         ),
       );
     }
-    return new Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: list
-    ); 
+    print(list);
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: list
+      )
+    );
+  }
+
+  Future<List<Crop>> getCropList() async {
+    CropClient cropClient = new CropClient();
+    return await cropClient.getAllCrops();
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {        
     return Container(
       padding: EdgeInsets.all(7),
       child: Column(
@@ -56,7 +71,14 @@ class TimelineUpdateList extends StatelessWidget {
             )
           ),
           Divider(thickness: 1.5,),
-          _buildCropList(context)
+          FutureBuilder(        
+            future: getCropList(),
+            builder: (context, snapshot) {
+              return snapshot.hasData 
+                ? _buildCropList(context, snapshot.data as List<Crop>)
+                  : CircularProgressIndicator();
+            },                        
+          )          
         ]
       ),      
     );
