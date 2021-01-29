@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:KrishiMitr/Screen/tab_page.dart';
+import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/clients/Utils.dart';
+import 'package:KrishiMitr/Utility/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,11 +19,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   User user = new User();
   TextEditingController userContactNumberController =
       new TextEditingController();
-  TextEditingController userPasswordController =
-      new TextEditingController();
+  TextEditingController userPasswordController = new TextEditingController();
+  bool _validatePass = true;
+  bool _validateContact = true;
+  String _loginFailString = "";
+    final focus = FocusNode();
+
+ 
 
   Widget _inputArea(String inputText, TextEditingController controller,
       {bool isPassword = false}) {
@@ -38,15 +45,23 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             height: 10,
           ),
-          TextField(
+          TextFormField(
+             
+            textInputAction: TextInputAction.next,
               obscureText: isPassword,
               decoration: InputDecoration(
                   border: InputBorder.none,
                   fillColor: Colors.grey.shade200,
                   filled: true,
-                  labelText:
-                      isPassword ? "Enter Password" : "Enter Mobile Number"),
-                      controller: controller,
+                  hintText:
+                      isPassword ? "Enter Password" : "Enter Contact Number"),
+              controller: controller,
+              validator: (value) {
+                return isPassword
+                    ? Validation.validatePassword(value)
+                    : Validation.validateContactNumber(value);
+              },
+              autofocus: true,
               keyboardType:
                   !isPassword ? TextInputType.phone : TextInputType.text)
         ],
@@ -57,7 +72,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget _loginButton() {
     return InkWell(
       onTap: () {
-        _loginUser();
+        if (_formKey.currentState.validate()) {
+          _loginUser();
+        }
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -127,25 +144,28 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _loginUser() async{
+  void _loginUser() async {
     IUserClient userClient = new UserClient();
     user.userContactNumber = userContactNumberController.text;
     user.userpassword = userPasswordController.text;
-   
-    Response response = await  userClient.loginUser(user);
-    if(response.statusCode==200){
+
+    Response response = await userClient.loginUser(user);
+    if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setInt(Utils.USER_ID, json['userId']);
       prefs.setString(Utils.TOKEN, json['token']);
-
-      Navigator.of(context).pushNamed(TabScreen.routeName);
-
+      Navigator.of(context).pushNamedAndRemoveUntil(TabScreen.routeName,(Route<dynamic> route) => false);
+    }else{
+         setState(() {
+           _loginFailString = "Incorrect username or password";
+         });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
@@ -167,19 +187,34 @@ class _LoginPageState extends State<LoginPage> {
                     SizedBox(
                       height: height * 0.08,
                     ),
-                    _inputArea("Contact Number",userContactNumberController),
-                    _inputArea("Password",userPasswordController, isPassword: true),
-                    Container(
-                      alignment: Alignment.centerRight,
-                      child: Text('Forgot Password ?',
-                          style: TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w600)),
+                    Form(
+                     
+                      key: _formKey,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+                          _inputArea(
+                              "Contact Number", userContactNumberController),
+                          _inputArea("Password", userPasswordController,
+                              isPassword: true),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,14.0),
+                            child: Text(_loginFailString,style: TextStyle(color: Colors.red),),
+                          ),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: Text('Forgot Password ?',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.w600)),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          _loginButton(),
+                        ],
+                      ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    
-                   _loginButton(),
                     SizedBox(height: height * .1),
                     _label()
                   ]),

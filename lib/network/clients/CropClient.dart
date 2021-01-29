@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/network/clients/Utils.dart';
+import 'package:KrishiMitr/Utility/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';

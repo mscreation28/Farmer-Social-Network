@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:KrishiMitr/Utility/Utils.dart';
+import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
@@ -23,12 +25,14 @@ class _EditProfileState extends State<EditProfile> {
 
   Future getImage(String action) async {      
     final selectedImage = action != "Gallery"
-      ? await picker.getImage(source: ImageSource.camera)
-        : await picker.getImage(source: ImageSource.gallery);
+      ? await picker.getImage(source: ImageSource.camera,imageQuality: 25)
+        : await picker.getImage(source: ImageSource.gallery,imageQuality: 25);
     
     setState(() {
       if (selectedImage != null) {
         imageFile = File(selectedImage.path);
+        user.profilPic = imageFile;
+        Navigator.of(context).pop();
       } else {
         print('No image selected.');
       }
@@ -72,7 +76,11 @@ class _EditProfileState extends State<EditProfile> {
 
   void updateUser() async{
     IUserClient userClient = new UserClient();
-    userClient.updateUser(user);
+    var response = await userClient.updateUser(user);
+
+    if(response.statusCode==200){
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -126,7 +134,7 @@ class _EditProfileState extends State<EditProfile> {
                   ],   
                   image: DecorationImage(
                     image: imageFile == null
-                      ? AssetImage("assets/images/farmer.png")
+                      ? NetworkImage('${Utils.BASE_URL}uploads/${user.userProfileUrl}')
                         : FileImage(imageFile)
                   )                           
                 ),
@@ -161,14 +169,14 @@ class _EditProfileState extends State<EditProfile> {
                       TextFormField(
                         initialValue: user.userName,
                         decoration: InputDecoration(labelText: 'Name'),
-                        validator: (value) => value.isEmpty ? 'Name is required' : null,
+                        validator: (value) => Validation.validateUserName(value),
                         onSaved: (value) => user.userName = value,
                       ),
                       SizedBox(height: 10),
                       TextFormField(
                         initialValue: user.userContactNumber,
-                        decoration: InputDecoration(labelText: 'Mobile Number'),
-                        validator: (value) => value.isEmpty ? 'Mobile number is required' : null,
+                        decoration: InputDecoration(labelText: 'Contact Number'),
+                        validator: (value) =>Validation.validateContactNumberSignUp(value),
                         onSaved: (value) => name = value,
                         keyboardType: TextInputType.number,
                       ),

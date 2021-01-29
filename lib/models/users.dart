@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 class User{
@@ -9,6 +11,7 @@ class User{
    String userProfileUrl;
    String userType;
    String userpassword;
+   File profilPic;
 
   User({@required this.userpassword, @required this.userId,@required this.userName,@required this.userContactNumber,@required this.userCity,@required this.userState, this.userProfileUrl,@required this.userType});
   
@@ -25,7 +28,7 @@ class User{
     );  
   }
 
-  Map<String, String> toJson(){
+  Map<String, dynamic> toJson(){
     return {
       'userId': userId.toString(), 
       'userName': userName, 
@@ -34,7 +37,7 @@ class User{
       'userState': userState,
       'userProfileUrl': userProfileUrl, 
       'userType': userType,
-      'userpassword': userpassword
+      'userpassword': userpassword,
     };
   }
   

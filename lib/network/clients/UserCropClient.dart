@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Utils.dart';
+import '../../Utility/Utils.dart';
 
 class UserCropClient implements IUserCropClient {
   static const String USER_CROP = "userCrops";
@@ -16,7 +17,7 @@ class UserCropClient implements IUserCropClient {
   }
 
   @override
-  void addUserCrop(UserCrop userCrop) async {
+  Future<Response> addUserCrop(UserCrop userCrop) async {
     String token = await getTokenString();
     try {
       final response = await http.post(
@@ -29,28 +30,20 @@ class UserCropClient implements IUserCropClient {
         body: jsonEncode(userCrop.toJson()),
       );
       print(jsonDecode(response.body));
-      if (response.statusCode == 201) {
-        print(jsonDecode(response.body));
-      } else {
-        throw Exception("Error while addding new crop");
-      }
+      return response;
     } catch (error) {
       print(error.toString());
     }
   }
 
   @override
-  void deleteUserCrop(int userCropId) async {
+  Future<Response> deleteUserCrop(int userCropId) async {
     String token = await getTokenString();
     var response = await http.delete('${Utils.BASE_URL}$USER_CROP/$userCropId',headers: {
       'Authorization':'Bearer $token'
     });
     print(jsonEncode(response.body));
-    if (response.statusCode == 200) {
-      print(jsonEncode(response.body));
-    } else {
-      throw Exception("Delete Unsuccesfull");
-    }
+  return response;
   }
 
   @override
@@ -85,7 +78,7 @@ class UserCropClient implements IUserCropClient {
   }
 
   @override
-  void updateUserCrop(UserCrop userCrop) async {
+  Future<http.Response> updateUserCrop(UserCrop userCrop) async {
     String token = await getTokenString();
     var response = await http.patch(
         '${Utils.BASE_URL}$USER_CROP/${userCrop.userCropId}',
@@ -95,10 +88,6 @@ class UserCropClient implements IUserCropClient {
         },
         body: jsonEncode(userCrop.toJson()));
     print(jsonDecode(response.body));
-    if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-    } else {
-      throw Exception("Error while addding new crop");
-    }
+    return response;
   }
 }
