@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:KrishiMitr/models/timeline_event.dart';
 import 'package:KrishiMitr/network/interfaces/ITimelineEventClient.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Utils.dart';
+import '../../Utility/Utils.dart';
 
 class TimelineEventClient implements ITimeLineEventClient {
   static const String TIMELINE_URL = 'timeline';
@@ -16,7 +17,7 @@ class TimelineEventClient implements ITimeLineEventClient {
   }
 
   @override
-  void addTimelineEvent(TimelineEvent timelineEvent) async {
+  Future<http.Response> addTimelineEvent(TimelineEvent timelineEvent) async {
     String token = await getTokenString();
     var response = await http.post(
       '${Utils.BASE_URL}$TIMELINE_URL',
@@ -24,15 +25,11 @@ class TimelineEventClient implements ITimeLineEventClient {
       body: jsonEncode(timelineEvent.toJson()),
     );
     print(jsonDecode(response.body));
-    if (response.statusCode == 201) {
-      print(jsonDecode(response.body));
-    } else {
-      throw Exception('Error while adding timeline');
-    }
+    return response;
   }
 
   @override
-  void deleteTimelineEvent(int timelineId) async {
+  Future<http.Response> deleteTimelineEvent(int timelineId) async {
     String token = await getTokenString();
     var response =
         await http.delete('${Utils.BASE_URL}$TIMELINE_URL/$timelineId',headers: {
@@ -40,11 +37,7 @@ class TimelineEventClient implements ITimeLineEventClient {
         });
     print(jsonDecode(response.body));
 
-    if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-    } else {
-      throw Exception('Error while deleting timeline');
-    }
+    return response;
   }
 
   @override
@@ -74,7 +67,7 @@ class TimelineEventClient implements ITimeLineEventClient {
   }
 
   @override
-  void updateTimelineEvent(TimelineEvent timelineEvent) async {
+  Future<Response> updateTimelineEvent(TimelineEvent timelineEvent) async {
     String token = await getTokenString();
     var response = await http.patch(
       '${Utils.BASE_URL}$TIMELINE_URL/${timelineEvent.timelineId}',
@@ -83,10 +76,6 @@ class TimelineEventClient implements ITimeLineEventClient {
     );
     print(jsonDecode(response.body));
 
-    if (response.statusCode == 200) {
-      print(jsonDecode(response.body));
-    } else {
-      throw Exception('Error while deleting timeline');
-    }
+    return response;
   }
 }

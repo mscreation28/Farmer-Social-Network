@@ -11,8 +11,9 @@ import 'package:flutter/material.dart';
 class UserCropList extends StatelessWidget {
   final UserCrop userCrop;
   List<Crop> cropList;
+  Function callBack;
 
-  UserCropList(this.userCrop,this.cropList);
+  UserCropList(this.userCrop,this.cropList,this.callBack);
 
   void viewallActicity(BuildContext cntx) {
     Navigator.pushNamed(cntx, TimelineActivity.routeName, arguments: {
@@ -24,7 +25,7 @@ class UserCropList extends StatelessWidget {
     Navigator.pushNamed(cntx, EditCropTimeline.routeName, arguments: {
       'userCrop': userCrop,
       'cropList':cropList
-    });
+    }).whenComplete(callBack);
   }
 
 
