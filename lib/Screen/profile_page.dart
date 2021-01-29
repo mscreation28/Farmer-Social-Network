@@ -204,6 +204,12 @@ class _ProfilePageState extends State<ProfilePage> {
     //then fetch user crop
     UserCropClient userCropClient = new UserCropClient();
     List<UserCrop> userCropList = await userCropClient.getAllUserCrop(userId);
+
+    //sort based on userCropDate
+    userCropList.sort((userCrop1,userCrop2){
+      return userCrop2.cropDate.compareTo(userCrop1.cropDate);
+    });
+
     userCropList.forEach((userCrop) {
       userCrop.cropName = widget.cropList
           .firstWhere((crop) => crop.cropId == userCrop.cropId)

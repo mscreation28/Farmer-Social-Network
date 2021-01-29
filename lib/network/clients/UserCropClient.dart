@@ -47,11 +47,11 @@ class UserCropClient implements IUserCropClient {
   }
 
   @override
-  Future<List<UserCrop>> getAllUserCrop(int userCropId) async {
+  Future<List<UserCrop>> getAllUserCrop(int userId) async {
     String token = await getTokenString();
     try {
       final response =
-          await http.get('${Utils.BASE_URL}$USER_CROP/$userCropId',headers: {
+          await http.get('${Utils.BASE_URL}$USER_CROP/$userId',headers: {
             'Authorization':'Bearer $token',
           });
       print(jsonDecode(response.body));

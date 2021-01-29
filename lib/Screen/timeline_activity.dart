@@ -178,7 +178,11 @@ class _TimelineActivityState extends State<TimelineActivity> {
 
   Future<List<TimelineEvent>> getCropTimelines(int userCropId) async {
     TimelineEventClient timelineEventClient = new TimelineEventClient();
-    return await timelineEventClient.getAllTimelineEvents(userCropId);
+   List<TimelineEvent> timlineEventList = await timelineEventClient.getAllTimelineEvents(userCropId);
+   timlineEventList.sort((timeline1,timeline2){
+     return timeline2.timelineDate.compareTo(timeline1.timelineDate);
+   });
+   return timlineEventList;
   }
 
   Widget _getTimeline(List<TimelineEvent> timelineList) {
