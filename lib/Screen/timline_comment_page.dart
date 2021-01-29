@@ -9,7 +9,7 @@ import 'package:KrishiMitr/network/clients/CommentClient.dart';
 import 'package:KrishiMitr/network/clients/LikeClient.dart';
 import 'package:KrishiMitr/network/clients/ReplyClient.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/clients/Utils.dart';
+import 'package:KrishiMitr/Utility/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -64,7 +64,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                 future: getUser(widget.post.userId),
                 builder: (context, snapshot) {
                   return snapshot.hasData
-                    ? BuildPost(post: widget.post, user: snapshot.data as User)
+                    ? BuildPost(post: widget.post, user: snapshot.data as User, loginUser: widget.loginUser,)
                       : CircularProgressIndicator();
                 },
               )
@@ -299,9 +299,9 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
     return commentList;
   }
 
-  Future<String> getUserName(int userId) async {    
+  Future<User> getUserName(int userId) async {    
     User user = await userClient.getSpecificUser(userId);    
-    return user.userName;  
+    return user;  
   }
 
   void addNewComment() async {
@@ -335,13 +335,13 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
       future: getUserName(comment.userId),
       builder: (context, snapshot) {
         return snapshot.hasData 
-        ? commentWidget(snapshot.data as String, comment)
+        ? commentWidget(snapshot.data as User, comment)
           : CircularProgressIndicator();
       }                  
     );
   }
 
-  Widget commentWidget(String uname, Comment comment) {    
+  Widget commentWidget(User user, Comment comment) {    
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,      
       children: [
@@ -357,7 +357,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
               width: 0.5,
             ),                      
             image: DecorationImage(
-              image: AssetImage("assets/images/farmer.png"),
+              image:NetworkImage('${Utils.BASE_URL}uploads/${user.userProfileUrl}'),
             )
           ),                   
         ),
@@ -378,7 +378,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    uname,
+                    user.userName,
                     // getUserName(comment.userId),
                     style: TextStyle(
                       fontSize: 15,
@@ -400,7 +400,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                 minWidth: 0,            
                 onPressed: () {
                   replyCommentId=comment.commentId;                  
-                  replyCommentName=uname;
+                  replyCommentName=user.userName;
                   setState(() {
                     isReply = true;
                   });                  
@@ -452,7 +452,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
       future: getUserName(reply.userId),
       builder: (context, snapshot) {
         return snapshot.hasData 
-        ? replyWidget(snapshot.data as String, reply.reply)
+        ? replyWidget(snapshot.data as User, reply.reply)
           : CircularProgressIndicator();
       }                  
     );
@@ -465,7 +465,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
     return replyList;
   }
 
-  Widget replyWidget(String uname, String reply) {
+  Widget replyWidget(User user, String reply) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,                    
       children: [
@@ -481,7 +481,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
               width: 0.5,
             ),                      
             image: DecorationImage(
-              image: AssetImage("assets/images/farmer.png"),
+              image: NetworkImage('${Utils.BASE_URL}uploads/${user.userProfileUrl}'),
             )
           ),                   
         ),
@@ -502,7 +502,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    uname,
+                    user.userName,
                     // getUserName(reply.userId),
                     style: TextStyle(
                       fontSize: 15,

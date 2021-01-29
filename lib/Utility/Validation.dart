@@ -65,7 +65,7 @@ class Validation{
   }
 
   static String validateUserName(String value) {
-    final validCharacters = RegExp(r'^[a-zA-Z_]+$');
+    final validCharacters = RegExp(r'^[a-zA-Z0-9_]+$');
     if (value.isEmpty || value.length < 3) {
       return "Username must be greater than 2 characters";
     } else if (!validCharacters.hasMatch(value)) {
@@ -73,6 +73,7 @@ class Validation{
     } else {
       return null;
     }
+    
   }
 
   static String validatePasswordSignUP(String value) {

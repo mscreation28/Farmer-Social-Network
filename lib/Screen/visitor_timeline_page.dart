@@ -12,15 +12,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
-class TimelineActivity extends StatefulWidget {
-  static const routeName = './timeline-activity';
+class VisitorTimelineActivity extends StatefulWidget {
+  static const routeName = './Visitor-timeline-activity';
   String usercropId;
   UserCrop userCrop;
   @override
-  _TimelineActivityState createState() => _TimelineActivityState();
+  _VisitorTimelineActivityState createState() => _VisitorTimelineActivityState();
 }
 
-class _TimelineActivityState extends State<TimelineActivity> {  
+class _VisitorTimelineActivityState extends State<VisitorTimelineActivity> {  
 
   void editActivity(TimelineEvent timeline,BuildContext cntx) {
     Navigator.pushNamed(
@@ -87,15 +87,15 @@ class _TimelineActivityState extends State<TimelineActivity> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Container(
-                    child: IconButton(
-                        icon: Icon(Icons.edit),
-                        padding: EdgeInsets.all(0),
-                        constraints: BoxConstraints(),
-                        onPressed: () {
-                          editActivity(timelineEvent, context);
-                        }),
-                  )
+                  // Container(
+                  //   child: IconButton(
+                  //       icon: Icon(Icons.edit),
+                  //       padding: EdgeInsets.all(0),
+                  //       constraints: BoxConstraints(),
+                  //       onPressed: () {
+                  //         editActivity(timelineEvent, context);
+                  //       }),
+                  // )
                 ],
               ),
             ),
@@ -112,9 +112,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
             ),
             const SizedBox(height: 4),
             Text(
-              _difference~/30==0 ? 
-                  '${_difference % 30} days'
-                  : '${_difference ~/ 30} Months  ${_difference % 30} days',
+              "${_difference ~/ 30} Months  ${_difference % 30} days",
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.normal,
@@ -195,7 +193,7 @@ class _TimelineActivityState extends State<TimelineActivity> {
     TimelineEventClient timelineEventClient = new TimelineEventClient();
    List<TimelineEvent> timlineEventList = await timelineEventClient.getAllTimelineEvents(userCropId);
    timlineEventList.sort((timeline1,timeline2){
-     return timeline1.timelineDate.compareTo(timeline2.timelineDate);
+     return timeline2.timelineDate.compareTo(timeline1.timelineDate);
    });
    return timlineEventList;
   }
@@ -237,15 +235,15 @@ class _TimelineActivityState extends State<TimelineActivity> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, NewTimelineEvent.routeName,arguments: {
-             'userCrop': widget.userCrop,
-             'refresh': refresh,
-          });
-        },
-        child: Icon(Icons.add),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, NewTimelineEvent.routeName,arguments: {
+      //        'userCrop': widget.userCrop,
+      //        'refresh': refresh,
+      //     });
+      //   },
+      //   child: Icon(Icons.add),
+      // ),
     );
   }
 }

@@ -64,36 +64,25 @@ class UserClient implements IUserClient {
       throw Exception('Failed to load user');
     }
   }
-
-  @override
+    @override
   Future<dio.Response> updateUser(User user) async {
     String token = await getTokenString();
     dio.FormData formData = new dio.FormData.fromMap(user.toJson());
-    
-    String fileName = user.profilPic.path.split('/').last;
-    var file = await MultipartFile.fromFile(user.profilPic.path, filename:fileName);
-    formData.files.add(MapEntry('userProfilePic',file));
 
-    var response = await dio.Dio().patch(
-        '${Utils.BASE_URL}$USER_URL/${user.userId}',
-        data: formData,
-        options: dio.Options(
-            headers: <String, String>{'Authorization': 'Bearer $token'}));
-
-    print(response);
-    return response;
-
-    // var response = await http.patch('${Utils.BASE_URL}$USER_URL/${user.userId}',
-    //     headers: <String, String>{
-    //       'Content-type': 'application/json; charset=UTF-8',
-    //       'Authorization': 'Bearer $token'
-    //     },
-    //     body: jsonEncode(user.toJson()));
-    // print(jsonDecode(response.body));
-    // if (response.statusCode == 200) {
-    //   print(jsonDecode(response.body));
-    // } else {
-    //   throw Exception("Error while updating user");
-    // }
+    if (user.profilPic != null){
+      String fileName = user.profilPic.path.split('/').last;
+      var file =
+          await MultipartFile.fromFile(user.profilPic.path, filename: fileName);
+      formData.files.add(MapEntry('userProfilePic', file));
+      return await dio.Dio().patch('${Utils.BASE_URL}$USER_URL/${user.userId}',
+          data: formData,
+          options: dio.Options(
+              headers: <String, String>{'Authorization': 'Bearer $token'}));
+    } else {
+      return await dio.Dio().patch('${Utils.BASE_URL}$USER_URL/${user.userId}',
+      data: formData,
+          options: dio.Options(
+              headers: <String, String>{'Authorization': 'Bearer $token'}));
+    }
   }
 }

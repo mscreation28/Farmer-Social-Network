@@ -1,4 +1,6 @@
+import 'package:KrishiMitr/Screen/profile_page.dart';
 import 'package:KrishiMitr/Screen/timline_comment_page.dart';
+import 'package:KrishiMitr/Utility/Utils.dart';
 import 'package:KrishiMitr/models/dummy_data.dart';
 import 'package:KrishiMitr/models/like.dart';
 import 'package:KrishiMitr/models/post_model.dart';
@@ -6,12 +8,14 @@ import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/LikeClient.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
+import '../Screen/visitor_profile_page.dart';
 import 'package:flutter/material.dart';
 
 class BuildPost extends StatelessWidget {
   PostModel post;
   User user;
-  BuildPost({this.post, this.user});
+  User loginUser;
+  BuildPost({this.post, this.user, this.loginUser});
 
   String getCropname(String id) {
     return dummyCrop.firstWhere((element) => element.id==id).name;
@@ -23,144 +27,153 @@ class BuildPost extends StatelessWidget {
     final DateTime curDate = DateTime.now();
     final _difference = curDate.difference(date).inDays;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          post.isUserCrop==1 
-            ? "Congratulate ${user.userName} fro soweing a new crop.."
-              : "${user.userName}'s Timeline updated..",
-          style: TextStyle(
-            fontSize: 15,
-            color: Colors.grey.shade700
-          ),
-        ),
-        Divider(),
-        Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.grey.shade300,
-              width: 0.5
+    return InkWell(
+      onTap: () {
+        loginUser.userId == post.userId 
+          ? Navigator.pushNamed(context, ProfilePage.routeName
+          )
+          : Navigator.pushNamed(context, VisitorProfilePage.routeName,
+              arguments: {'userId': post.userId});
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            post.isUserCrop==1 
+              ? "Congratulate ${user.userName} for soweing a new crop.."
+                : "${user.userName}'s Timeline updated..",
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey.shade700
             ),
-            borderRadius: BorderRadius.circular(10)
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    height: 60.0,
-                    width: 60.0,
-                    padding: EdgeInsets.all(8),                      
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,                        
-                      border: Border.all(
-                        color: Colors.grey.shade200,
-                        width: 0.5,
-                      ),                      
-                      image: DecorationImage(
-                        image: AssetImage("assets/images/farmer.png"),
-                      )
-                    ),                   
-                  ),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FittedBox(
-                        child: Text(
-                          '${user.userName}',
-                          style: TextStyle(                          
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold, 
-                            height: 0.8,
+          Divider(),
+          Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Colors.grey.shade300,
+                width: 0.5
+              ),
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      height: 60.0,
+                      width: 60.0,
+                      padding: EdgeInsets.all(8),                      
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,                        
+                        border: Border.all(
+                          color: Colors.grey.shade200,
+                          width: 0.5,
+                        ),                      
+                        image: DecorationImage(
+                          image: NetworkImage('${Utils.BASE_URL}uploads/${user.userProfileUrl}'),
+                        )
+                      ),                   
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FittedBox(
+                          child: Text(
+                            '${user.userName}',
+                            style: TextStyle(                          
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold, 
+                              height: 0.8,
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      FittedBox(                          
-                        child: Text(
-                          '${user.userCity}, ${user.userState}',
-                          style: TextStyle(                          
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey.shade500
+                        SizedBox(
+                          height: 4,
+                        ),
+                        FittedBox(                          
+                          child: Text(
+                            '${user.userCity}, ${user.userState}',
+                            style: TextStyle(                          
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.grey.shade500
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        " ${_difference~/30} Months  ${_difference%30} days",
-                        style: TextStyle(
-                          fontSize: 13,                
-                          fontWeight: FontWeight.normal,
-                        ),
-                      )
-                    ]
+                        SizedBox(height: 4),
+                        Text(
+                          " ${_difference~/30} Months  ${_difference%30} days",
+                          style: TextStyle(
+                            fontSize: 13,                
+                            fontWeight: FontWeight.normal,
+                          ),
+                        )
+                      ]
+                    )
+                  ],
+                ),
+                SizedBox(
+                  // height: 10,
+                  width: MediaQuery.of(context).size.width *0.5,
+                  child: Divider(                                        
+                    // thickness: 1.5,                 
+                  ),
+                ),
+                Text(
+                  post.isUserCrop==1 
+                    ? 'Wheat (${post.title})'
+                      : post.title,
+                  style: TextStyle(
+                    fontSize: 17,   
+                    fontWeight: FontWeight.bold            
+                  ),
+                ),
+                SizedBox(height: 4,),
+                Text(
+                  post.postDecription!=null ? post.postDecription : "-",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.grey.shade600,               
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ],
+            ),
+          ), 
+          SizedBox(
+            height: 5,
+          ),
+          RichText(
+            text: TextSpan(
+              children: [
+                WidgetSpan(
+                  child: Icon(
+                    Icons.favorite,
+                    size: 19,
+                    color: Theme.of(context).primaryColor,
                   )
-                ],
-              ),
-              SizedBox(
-                // height: 10,
-                width: MediaQuery.of(context).size.width *0.5,
-                child: Divider(                                        
-                  // thickness: 1.5,                 
                 ),
-              ),
-              Text(
-                post.isUserCrop==1 
-                  ? 'Wheat (${post.title})'
-                    : post.title,
-                style: TextStyle(
-                  fontSize: 17,   
-                  fontWeight: FontWeight.bold            
-                ),
-              ),
-              SizedBox(height: 4,),
-              Text(
-                post.postDecription!=null ? post.postDecription : "-",
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey.shade600,               
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-            ],
-          ),
-        ), 
-        SizedBox(
-          height: 5,
-        ),
-        RichText(
-          text: TextSpan(
-            children: [
-              WidgetSpan(
-                child: Icon(
-                  Icons.favorite,
-                  size: 19,
-                  color: Theme.of(context).primaryColor,
+                WidgetSpan(child: SizedBox(width: 10,)),
+                TextSpan(
+                  text: '${post.likeCount} Like',
+                  style: TextStyle(                      
+                    fontSize: 15,            
+                    color: Theme.of(context).primaryColorDark,          
+                    fontWeight: FontWeight.bold                          
+                  ),
                 )
-              ),
-              WidgetSpan(child: SizedBox(width: 10,)),
-              TextSpan(
-                text: '${post.likeCount} Like',
-                style: TextStyle(                      
-                  fontSize: 15,            
-                  color: Theme.of(context).primaryColorDark,          
-                  fontWeight: FontWeight.bold                          
-                ),
-              )
-            ]
+              ]
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -241,7 +254,7 @@ class _TimelinePostState extends State<TimelinePost> {
             future: getUserDetails(),
             builder: (context, snapshot) {
               return snapshot.hasData
-                ? BuildPost(post: widget.post, user: snapshot.data,)
+                ? BuildPost(post: widget.post, user: snapshot.data, loginUser: widget.loginUser)
                   : CircularProgressIndicator();
             },
           )

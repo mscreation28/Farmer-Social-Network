@@ -4,7 +4,7 @@ import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/PostCliet.dart';
 import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/clients/Utils.dart';
+import 'package:KrishiMitr/Utility/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -62,6 +62,9 @@ class _TimelineUpdateState extends State<TimelineUpdate> {
     loginUser = await getLoggedInUser();
     List<PostModel> postList =
         await postClient.getAllPostOnCrop(cropId);
+    postList.sort((p1,p2){
+      return p2.postDate.compareTo(p1.postDate);
+    });
     return postList;
   }
 

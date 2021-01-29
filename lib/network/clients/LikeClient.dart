@@ -5,7 +5,7 @@ import 'package:KrishiMitr/network/interfaces/ILikeClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Utils.dart';
+import '../../Utility/Utils.dart';
 
 class LikeClient implements ILikeClient {
   static const String LIKE = "like";

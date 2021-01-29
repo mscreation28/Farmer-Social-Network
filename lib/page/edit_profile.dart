@@ -92,14 +92,14 @@ class _EditProfileState extends State<EditProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Profile'),
+        title: Text('Edit Profile', style: TextStyle(color: Theme.of(context).primaryColorDark)),
         actions: [
           IconButton(
             icon: Icon(Icons.done),
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                updateUser().whenComplete(() => Navigator.pop(context));
+                updateUser();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
@@ -108,6 +108,9 @@ class _EditProfileState extends State<EditProfile> {
             }
           )
         ],
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColorDark
+        ),
         backgroundColor: Theme.of(context).primaryColorLight,
       ),
       body : SingleChildScrollView(
@@ -204,13 +207,13 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ],
                       ),
-                      TextFormField(
-                        initialValue: user.userpassword,
-                        obscureText: true,
-                        decoration: InputDecoration(labelText: 'Password'),
-                        validator: (value) => value.isEmpty ? 'Password is required' : null,
-                        onSaved: (value) => user.userpassword = value,                        
-                      ),
+                      // TextFormField(
+                      //   initialValue: user.userpassword,
+                      //   obscureText: true,
+                      //   decoration: InputDecoration(labelText: 'Password'),
+                      //   validator: (value) => value.isEmpty ? 'Password is required' : null,
+                      //   onSaved: (value) => user.userpassword = value,                        
+                      // ),
                     ]
                   )
                 )

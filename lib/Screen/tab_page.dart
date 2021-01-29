@@ -37,25 +37,7 @@ class _TabScreenState extends State<TabScreen> {
     
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: TitleText(
-          color1: Theme.of(context).primaryColorDark,
-          color2: Theme.of(context).accentColor
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Theme.of(context).primaryColor,
-                Theme.of(context).primaryColorLight
-              ],
-            )
-          ),
-        ),
-      ),
+    return Scaffold(      
       body: _pages[_selectedPageIndex]['page'],
 
       bottomNavigationBar: BottomNavigationBar(

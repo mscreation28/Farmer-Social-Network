@@ -97,7 +97,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                updateUserCrop().whenComplete(() => Navigator.pop(context));
+                updateUserCrop();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
@@ -186,7 +186,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
                   keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 10),
-                InkWell(
+                InkWell(                  
                   onTap: () {_presentDatePicker(context);},
                   child: InputDecorator(
                     decoration: InputDecoration(labelText: 'Select Date*'),

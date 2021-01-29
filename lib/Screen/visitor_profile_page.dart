@@ -1,4 +1,4 @@
-import 'package:KrishiMitr/Widget/titleText.dart';
+import 'package:KrishiMitr/Widget/visitor_crop_item.dart';
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/models/users.dart';
@@ -20,35 +20,18 @@ import '../Widget/userCropListItem.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ProfilePage extends StatefulWidget {
-  static const routeName = "./profile-page";
+class VisitorProfilePage extends StatefulWidget {
+  static const routeName = "./visitor-profile-page";
   List<Crop> cropList;
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _VisitorProfilePageState createState() => _VisitorProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _VisitorProfilePageState extends State<VisitorProfilePage> {
   static int userId;
   bool isLoggedIn = false;
 
-  @override
-  void initState() {
-    super.initState();
-    autoLogIn();
-  }
 
-  void autoLogIn() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int userIdData = prefs.getInt(Utils.USER_ID);
-
-    if (userIdData != null) {
-      setState(() {
-        isLoggedIn = true;
-        userId = userIdData;
-      });
-      return;
-    }
-  }
 
   void gotoEditProfile(User user) {
     Navigator.pushNamed(context, EditProfile.routeName,
@@ -96,46 +79,46 @@ class _ProfilePageState extends State<ProfilePage> {
                               fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Container(
-                        alignment: Alignment.topRight,
-                        child: FlatButton(
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            onPressed: () {
-                              gotoEditProfile(user);
-                            },
-                            padding: EdgeInsets.only(right: 17),
-                            minWidth: 0,
-                            height: 0,
-                            // constraints: BoxConstraints(),
-                            child: RichText(
-                              text: TextSpan(children: [
-                                TextSpan(
-                                  text: 'Edit Profile',
-                                  style: GoogleFonts.cairo(
-                                      textStyle:
-                                          Theme.of(context).textTheme.caption,
-                                      fontSize: 15,
-                                      color: Theme.of(context).primaryColorDark,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                WidgetSpan(
-                                    child: SizedBox(
-                                  width: 5,
-                                )),
-                                WidgetSpan(
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 21,
-                                    color: Theme.of(context).primaryColorDark,
-                                  ),
-                                )
-                              ]),
-                            )
+                      // Container(
+                      //   alignment: Alignment.topRight,
+                      //   child: FlatButton(
+                      //       materialTapTargetSize:
+                      //           MaterialTapTargetSize.shrinkWrap,
+                      //       onPressed: () {
+                      //         gotoEditProfile(user);
+                      //       },
+                      //       padding: EdgeInsets.only(right: 17),
+                      //       minWidth: 0,
+                      //       height: 0,
+                      //       // constraints: BoxConstraints(),
+                      //       child: RichText(
+                      //         text: TextSpan(children: [
+                      //           TextSpan(
+                      //             text: 'Edit Profile',
+                      //             style: GoogleFonts.cairo(
+                      //                 textStyle:
+                      //                     Theme.of(context).textTheme.caption,
+                      //                 fontSize: 15,
+                      //                 color: Theme.of(context).primaryColorDark,
+                      //                 fontWeight: FontWeight.bold),
+                      //           ),
+                      //           WidgetSpan(
+                      //               child: SizedBox(
+                      //             width: 5,
+                      //           )),
+                      //           WidgetSpan(
+                      //             child: Icon(
+                      //               Icons.edit,
+                      //               size: 21,
+                      //               color: Theme.of(context).primaryColorDark,
+                      //             ),
+                      //           )
+                      //         ]),
+                      //       )
 
-                            // icon:
-                            ),
-                      ),
+                      //       // icon:
+                      //       ),
+                      // ),
                     ],
                   )
                 ),
@@ -189,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget getUserCropListWidget(List<UserCrop> userCropList) {
     List<Widget> list = [];
     for (var i = 0; i < userCropList.length; i++) {
-      list.add(UserCropList(userCropList[i], widget.cropList, refresh));
+      list.add(VisitorCropList(userCropList[i], widget.cropList, refresh));
     }
     return new Column(children: list);
   }
@@ -231,28 +214,23 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    var routeArgs = ModalRoute.of(context).settings.arguments as Map<String,dynamic>;
+    userId = routeArgs['userId'];
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, 
-        title: TitleText(
-          color1: Theme.of(context).primaryColorDark,
-          color2: Theme.of(context).accentColor
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Theme.of(context).primaryColor,
-                Theme.of(context).primaryColorLight
-              ],
-            )
+        title: Text(
+          "Profile Page",
+          style: TextStyle(
+            color: Theme.of(context).primaryColorDark
           ),
         ),
+        backgroundColor: Theme.of(context).primaryColorLight,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).primaryColorDark
+        ),
       ),
-      body: isLoggedIn
-          ? SingleChildScrollView(
+      body: 
+          SingleChildScrollView(
               child: Container(
                   color: Colors.grey.shade100,
                   child: Column(
@@ -279,16 +257,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         )
                       ])),
             )
-          : Text("not logged In"),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, NewCropTimeline.routeName,
-              arguments: {'cropList': widget.cropList,'userId':userId,'refresh':refresh});
-        },
-        child: Icon(
-          Icons.add,
-        ),
-      ),
+          // : Text("not logged In"),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.pushNamed(context, NewCropTimeline.routeName,
+      //         arguments: {'cropList': widget.cropList,'userId':userId,'refresh':refresh});
+      //   },
+      //   child: Icon(
+      //     Icons.add,
+      //   ),
+      // ),
     );
   }
 }

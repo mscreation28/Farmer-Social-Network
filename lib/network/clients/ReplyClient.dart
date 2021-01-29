@@ -5,7 +5,7 @@ import 'package:KrishiMitr/network/interfaces/IReplyClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Utils.dart';
+import '../../Utility/Utils.dart';
 
 class ReplyClient implements IReplyClient {
   static const String REPLY = "reply";

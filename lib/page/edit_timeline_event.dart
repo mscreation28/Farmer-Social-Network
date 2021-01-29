@@ -71,7 +71,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
   // }
   Future<void> editTimeLineEvent() async{
     TimelineEventClient timelineEventClient  = new TimelineEventClient();
-    await timelineEventClient.updateTimelineEvent(timelineEvent);
+    // await timelineEventClient.updateTimelineEvent(timelineEvent);
     refreshState();
     var response = await timelineEventClient.updateTimelineEvent(timelineEvent);
     if(response.statusCode==200){
@@ -113,7 +113,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                editTimeLineEvent().whenComplete(() => Navigator.pop(context));
+                editTimeLineEvent();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation

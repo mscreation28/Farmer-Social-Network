@@ -6,7 +6,7 @@ import 'package:KrishiMitr/network/interfaces/IPostClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Utils.dart';
+import '../../Utility/Utils.dart';
 
 class PostClient implements IPostClient {
   static const String POST = "posts";

@@ -5,7 +5,7 @@ import 'package:KrishiMitr/network/interfaces/ICommentClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'Utils.dart';
+import '../../Utility/Utils.dart';
 
 class CommentClient implements ICommentClient {
   static const String COMMENT = "comments";

@@ -27,7 +27,8 @@ class DeleteDialogCrop extends StatelessWidget {
           onPressed: () {
             // Navigator.pop(context);
             deleteCrop();
-            Navigator.popUntil(context, ModalRoute.withName(TabScreen.routeName));
+            int count = 0;
+            Navigator.of(context).popUntil((_) => count++ >= 1);
           },
         )
       ],

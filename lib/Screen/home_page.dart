@@ -1,6 +1,7 @@
 import 'package:KrishiMitr/Screen/timeline_updates.dart';
 import 'package:KrishiMitr/Widget/group_discussion_list.dart';
 import 'package:KrishiMitr/Widget/timeline_update_list.dart';
+import 'package:KrishiMitr/Widget/titleText.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -60,6 +61,24 @@ class _HomePageState extends State<HomePage> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      appBar: AppBar(
+        title: TitleText(
+          color1: Theme.of(context).primaryColorDark,
+          color2: Theme.of(context).accentColor
+        ),
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).primaryColorLight
+              ],
+            )
+          ),
+        ),
+      ),
       backgroundColor: Theme.of(context).primaryColorLight,      
       body: Row(
         // fit: StackFit.loose,        

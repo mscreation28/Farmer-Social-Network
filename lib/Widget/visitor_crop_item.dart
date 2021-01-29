@@ -1,4 +1,5 @@
 import 'package:KrishiMitr/Screen/timeline_activity.dart';
+import 'package:KrishiMitr/Screen/visitor_timeline_page.dart';
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/page/edit_crop_timeline.dart';
@@ -8,27 +9,21 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 
-class UserCropList extends StatelessWidget {
+class VisitorCropList extends StatelessWidget {
   final Function refresh;
   final UserCrop userCrop;
   List<Crop> cropList;
   Function callBack;
 
-  UserCropList(this.userCrop,this.cropList,this.refresh);
+  VisitorCropList(this.userCrop,this.cropList,this.refresh);
 
   void viewallActicity(BuildContext cntx) {
-    Navigator.pushNamed(cntx, TimelineActivity.routeName, arguments: {
+    Navigator.pushNamed(cntx, VisitorTimelineActivity.routeName, arguments: {
       'userCrop': userCrop,
     });
   }
 
-  void editActivity(BuildContext cntx) {
-    Navigator.pushNamed(cntx, EditCropTimeline.routeName, arguments: {
-      'userCrop': userCrop,
-      'cropList':cropList,
-      'refresh':refresh,
-    });
-  }
+
 
 
   @override
@@ -53,13 +48,13 @@ class UserCropList extends StatelessWidget {
                     userCrop.cropName,
                     style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
                   ),
-                  IconButton(
-                      padding: EdgeInsets.all(0),
-                      constraints: BoxConstraints(),
-                      icon: Icon(Icons.edit),
-                      onPressed: () {
-                        editActivity(context);
-                      })
+                  // IconButton(
+                  //     padding: EdgeInsets.all(0),
+                  //     constraints: BoxConstraints(),
+                  //     icon: Icon(Icons.edit),
+                  //     onPressed: () {
+                  //       editActivity(context);
+                  //     })
                 ],
               ),
               Divider(),
@@ -71,9 +66,7 @@ class UserCropList extends StatelessWidget {
               Text('Area - ${userCrop.area} Vigha'),
               SizedBox(height: 5),
               Text(
-                _difference~/30==0 ? 
-                  '$formattedDate   \u2022   ${_difference % 30} days'
-                  : '$formattedDate   \u2022   ${_difference ~/ 30} Months  ${_difference % 30} days'),
+                  '$formattedDate   \u2022   ${_difference ~/ 30} Months  ${_difference % 30} days'),
             ],
           ),
         ),

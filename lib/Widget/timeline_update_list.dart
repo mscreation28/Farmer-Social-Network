@@ -52,7 +52,11 @@ class TimelineUpdateList extends StatelessWidget {
 
   Future<List<Crop>> getCropList() async {
     CropClient cropClient = new CropClient();
-    return await cropClient.getAllCrops();
+    List<Crop> cropList =  await cropClient.getAllCrops();
+    cropList.sort((c1,c2){
+      return c1.cropId - c2.cropId;
+    });
+    return cropList;
   }
 
   @override

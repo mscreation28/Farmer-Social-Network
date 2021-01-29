@@ -41,6 +41,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
       }
       setState(() {        
         timelineEvent.timelineDate = value;
+        _date = value;
         print(_date);
       });
     });
@@ -48,6 +49,8 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
   Future<void> addNewTimeline() async{
     TimelineEventClient timelineEventClient = new TimelineEventClient();
     timelineEvent.userCropId = userCrop.userCropId;
+    timelineEvent.timelineDate = _date;
+    
     var response = await timelineEventClient.addTimelineEvent(timelineEvent);
     if (response.statusCode == 201) {
       refreshState();
@@ -57,6 +60,8 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
     }
   }
 
+
+  
   // Widget showCupertinoDate(BuildContext context) {
   //   return Container(     
   //     height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -93,7 +98,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                addNewTimeline().whenComplete(() => Navigator.pop(context));
+                addNewTimeline();
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation
