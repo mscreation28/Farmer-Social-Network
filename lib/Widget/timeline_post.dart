@@ -164,14 +164,30 @@ class BuildPost extends StatelessWidget {
     );
   }
 }
-class TimelinePost extends StatelessWidget {
+class TimelinePost extends StatefulWidget {
   PostModel post;
   User loginUser;
+
   TimelinePost({this.post, this.loginUser}); 
 
+  @override
+  _TimelinePostState createState() => _TimelinePostState();
+}
+
+class _TimelinePostState extends State<TimelinePost> {
+  int likeid;  
+
   Future<User> getUserDetails() async {
-    UserClient userClient = new UserClient();
-    return await userClient.getSpecificUser(post.userId);
+    UserClient userClient = new UserClient();    
+    return await userClient.getSpecificUser(widget.post.userId);
+  }
+
+  Future<int> getLikeDetails() async {
+    LikeClient likeClient = new LikeClient();
+
+    List<Like> likes = await likeClient.getAllLike(widget.post.postId);
+    likeid = likes.isEmpty ? -1 : likes.firstWhere((element) => element.userId == widget.loginUser.userId).likeId;
+    return likeid;
   }
 
   void addComment(BuildContext context) {
@@ -179,19 +195,40 @@ class TimelinePost extends StatelessWidget {
       context,
       TimelineCommentPage.routeName,
       arguments: {
-        'post' : post,
-        'loginuser' : loginUser,
+        'post' : widget.post,
+        'loginuser' : widget.loginUser,
+        'refresh' : refresh
       }
     );
   } 
 
   void addLike() async {
     LikeClient likeClient = new LikeClient();
-    Like like;
-    like.postId = post.postId;
-    like.userId = loginUser.userId;
-    print(like);
+    Like like = new Like();
+    like.postId = widget.post.postId;
+    like.userId = widget.loginUser.userId;
+    print(like);        
     await likeClient.addLike(like);
+    setState(() {
+      getLikeDetails();
+      widget.post.likeCount+=1;
+    });
+  }
+
+  void removeLike(int likeid) async {
+    LikeClient likeClient = new LikeClient();    
+    await likeClient.deleteLike(likeid,widget.post.postId);
+    setState(() {
+      getLikeDetails();
+      widget.post.likeCount-=1;
+    });
+  }
+
+  void refresh(int add) {
+    setState(() {
+      widget.post.likeCount+=add;      
+      getLikeDetails();
+    });
   }
 
   @override
@@ -204,7 +241,7 @@ class TimelinePost extends StatelessWidget {
             future: getUserDetails(),
             builder: (context, snapshot) {
               return snapshot.hasData
-                ? BuildPost(post: post, user: snapshot.data,)
+                ? BuildPost(post: widget.post, user: snapshot.data,)
                   : CircularProgressIndicator();
             },
           )
@@ -212,14 +249,29 @@ class TimelinePost extends StatelessWidget {
           Divider(),
           Row(
             children: [
-              IconButton(
-                padding: EdgeInsets.all(3),  
-                constraints: BoxConstraints(),
-                icon: Icon(Icons.favorite_outline),
-                onPressed: () {
-                  addLike();
-                },           
-                color: Colors.grey.shade700,       
+              FutureBuilder(
+                future: getLikeDetails(),
+                builder: (context, snapshot) {
+                  return (snapshot.hasData && snapshot.data!=-1)  
+                    ? IconButton(
+                      padding: EdgeInsets.all(3),  
+                      constraints: BoxConstraints(),
+                      icon: Icon(Icons.favorite),
+                      onPressed: () {                  
+                        removeLike(snapshot.data as int);
+                      },
+                      color: Theme.of(context).primaryColor
+                    )
+                      : IconButton(
+                      padding: EdgeInsets.all(3),  
+                      constraints: BoxConstraints(),
+                      icon: Icon(Icons.favorite_outline),                            
+                      onPressed: () {                  
+                        addLike();
+                      },
+                      color: Colors.grey.shade700,
+                    );  
+                }              
               ),
               SizedBox(width: 5,),
               Text(

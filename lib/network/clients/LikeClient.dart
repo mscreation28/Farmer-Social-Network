@@ -28,7 +28,7 @@ class LikeClient implements ILikeClient {
         body: jsonEncode(like.toJson()),
       );
       print(jsonDecode(response.body));
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         print(jsonDecode(response.body));
       } else {
         throw Exception("Error while addding new like");
@@ -39,16 +39,46 @@ class LikeClient implements ILikeClient {
   }
 
   @override
-  void deleteLike(int likeId) async {
+  void deleteLike(int likeId, int postId) async {
     String token = await getTokenString();
-    var response = await http.delete('${Utils.BASE_URL}$LIKE/$likeId',headers: {
-      'Authorization':'Bearer $token'
-    });
-    print(jsonEncode(response.body));
+    var url = Uri.parse('${Utils.BASE_URL}$LIKE/$likeId');
+    var request = http.Request("DELETE",url);
+      
+    request.headers.addAll(<String, String>{'Authorization':'Bearer $token',});
+    request.bodyFields = {'postId':postId.toString()};
+    
+    var response = await request.send();
+    // print(jsonEncode(response.body));
     if (response.statusCode == 200) {
-      print(jsonEncode(response.body));
+      print(jsonEncode("\n\n\${response.body}"));
     } else {
       throw Exception("Delete Unsuccesfull");
     }
-  }  
+  } 
+
+  @override
+  Future<List<Like>> getAllLike(int postId) async {
+    String token = await getTokenString();
+    try {
+      final response =
+          await http.get('${Utils.BASE_URL}$LIKE/$postId',headers: {
+            'Authorization':'Bearer $token',
+          });
+      print(jsonDecode(response.body));
+      if (response.statusCode == 200) {
+        List<Like> likes = [];
+        final jsonResponse = jsonDecode(response.body);
+
+        for (var like in jsonResponse['likes']) {
+          likes.add(Like.fromJson(like));
+        }
+        return likes;
+      } else {
+        throw Exception('Failed to load comments');
+      }
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+
 }

@@ -1,10 +1,12 @@
 import 'package:KrishiMitr/Widget/timeline_post.dart';
 import 'package:KrishiMitr/models/comment.dart';
+import 'package:KrishiMitr/models/like.dart';
 import 'package:KrishiMitr/models/post_model.dart';
 import 'package:KrishiMitr/models/reply.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/CommentClient.dart';
+import 'package:KrishiMitr/network/clients/LikeClient.dart';
 import 'package:KrishiMitr/network/clients/ReplyClient.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:KrishiMitr/network/clients/Utils.dart';
@@ -16,7 +18,8 @@ class TimelineCommentPage extends StatefulWidget {
   PostModel post;
   User user;
   User loginUser;
-  int postId;  
+  int postId;
+  Function refreshState;  
   TextEditingController commentController;
 
   @override
@@ -36,6 +39,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
     widget.post = routArgs['post'] as PostModel;
     widget.loginUser = routArgs['loginuser'] as User;
     widget.postId = widget.post.postId;
+    widget.refreshState = routArgs['refresh'] as Function;
     widget.commentController = TextEditingController();
 
     return Scaffold(
@@ -68,12 +72,29 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
               Divider(),
               Row(
                 children: [
-                  IconButton(
-                    padding: EdgeInsets.all(3),  
-                    constraints: BoxConstraints(),
-                    icon: Icon(Icons.favorite_outline),
-                    onPressed: () {},           
-                    color: Colors.grey.shade700,       
+                  FutureBuilder(
+                    future: getLikeDetails(),
+                    builder: (context, snapshot) {
+                      return (snapshot.hasData && snapshot.data!=-1)  
+                        ? IconButton(
+                          padding: EdgeInsets.all(3),  
+                          constraints: BoxConstraints(),
+                          icon: Icon(Icons.favorite),
+                          onPressed: () {                  
+                            removeLike(snapshot.data as int);
+                          },
+                          color: Theme.of(context).primaryColor
+                        )
+                          : IconButton(
+                          padding: EdgeInsets.all(3),  
+                          constraints: BoxConstraints(),
+                          icon: Icon(Icons.favorite_outline),                            
+                          onPressed: () {                  
+                            addLike();
+                          },
+                          color: Colors.grey.shade700,
+                        );  
+                    }              
                   ),
                   SizedBox(width: 5,),
                   Text(
@@ -237,8 +258,40 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
   ReplyClient replyClient = new ReplyClient();
   bool isReply=false;
   int replyCommentId;
+  int likeid;
   String replyCommentName;
 
+  Future<int> getLikeDetails() async {
+    LikeClient likeClient = new LikeClient();
+
+    List<Like> likes = await likeClient.getAllLike(widget.post.postId);
+    likeid = likes.isEmpty ? -1 : likes.firstWhere((element) => element.userId == widget.loginUser.userId).likeId;
+    return likeid;
+  }
+
+  void addLike() async {
+    LikeClient likeClient = new LikeClient();
+    Like like = new Like();
+    like.postId = widget.post.postId;
+    like.userId = widget.loginUser.userId;
+    print(like);        
+    await likeClient.addLike(like);
+    setState(() {
+      getLikeDetails();
+      // widget.post.likeCount+=1;
+      widget.refreshState(1);
+    });
+  }
+
+  void removeLike(int likeid) async {
+    LikeClient likeClient = new LikeClient();    
+    await likeClient.deleteLike(likeid,widget.post.postId);
+    setState(() {
+      getLikeDetails();
+      // widget.post.likeCount-=1;
+      widget.refreshState(-1);
+    });
+  }
 
   Future<List<Comment>> getAllComments(int postId) async {    
     List<Comment> commentList = await commentClient.getAllComment(postId);
