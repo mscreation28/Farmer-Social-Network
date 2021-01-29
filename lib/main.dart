@@ -1,3 +1,5 @@
+import 'package:KrishiMitr/Screen/timeline_updates.dart';
+import 'package:KrishiMitr/Screen/timline_comment_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './page/edit_crop_timeline.dart';
@@ -83,6 +85,8 @@ class _MyAppState extends State<MyApp> {
         EditCropTimeline.routeName : (ctx) => EditCropTimeline(),
         EditTimelineEvent.routeName : (ctx) => EditTimelineEvent(),
         EditProfile.routeName : (ctx) => EditProfile(),
+        TimelineCommentPage.routeName : (ctx) => TimelineCommentPage(),
+        TimelineUpdate.routeName: (ctx) => TimelineUpdate(),
       },
     );
   }

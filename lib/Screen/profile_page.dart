@@ -51,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void gotoEditProfile(User user) {
     Navigator.pushNamed(context, EditProfile.routeName,
-        arguments: {'user': user}).whenComplete(() => setState((){}));
+        arguments: {'user': user,'refresh':refreshUser});
   }
 
   Widget _headSection(User user) {
@@ -136,7 +136,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                       ),
                     ],
-                  )),
+                  )
+                ),
             ],
           ),
           Positioned(
@@ -172,15 +173,22 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-  
+
+  void refresh() {
+    setState(() {
+      getUserCropList();
+    });
+  }
+  void refreshUser() {
+    setState(() {
+      getUser();
+    });
+  }
+
   Widget getUserCropListWidget(List<UserCrop> userCropList) {
     List<Widget> list = [];
     for (var i = 0; i < userCropList.length; i++) {
-      list.add(UserCropList(userCropList[i], widget.cropList,(){
-        setState(() {
-          
-        });
-      }));
+      list.add(UserCropList(userCropList[i], widget.cropList, refresh));
     }
     return new Column(children: list);
   }
@@ -214,7 +222,9 @@ class _ProfilePageState extends State<ProfilePage> {
       userCrop.cropName = widget.cropList
           .firstWhere((crop) => crop.cropId == userCrop.cropId)
           .cropName;
-    });
+      });    
+    
+      
     return userCropList;
   }
 
@@ -256,10 +266,7 @@ class _ProfilePageState extends State<ProfilePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, NewCropTimeline.routeName,
-                  arguments: {'cropList': widget.cropList, 'userId': userId})
-              .whenComplete(() => {setState(() {})
-              
-              });
+              arguments: {'cropList': widget.cropList,'userId':userId,'refresh':refresh});
         },
         child: Icon(
           Icons.add,

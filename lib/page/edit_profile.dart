@@ -22,6 +22,7 @@ class _EditProfileState extends State<EditProfile> {
   AutovalidateMode _autovalidateMode = AutovalidateMode.disabled;
   String name;
   User user;
+  Function refreshState;
 
   Future getImage(String action) async {      
     final selectedImage = action != "Gallery"
@@ -74,10 +75,10 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  void updateUser() async{
+  Future<void> updateUser() async{
     IUserClient userClient = new UserClient();
     var response = await userClient.updateUser(user);
-
+    refreshState();
     if(response.statusCode==200){
       Navigator.of(context).pop();
     }
@@ -87,6 +88,8 @@ class _EditProfileState extends State<EditProfile> {
   Widget build(BuildContext context) {
     var routeArgs = ModalRoute.of(context).settings.arguments as Map<String,dynamic>;
     user = routeArgs['user'] as User;
+    refreshState = routeArgs['refresh'] as Function;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),
@@ -96,7 +99,7 @@ class _EditProfileState extends State<EditProfile> {
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                updateUser();
+                updateUser().whenComplete(() => Navigator.pop(context));
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation

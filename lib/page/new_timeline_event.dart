@@ -21,6 +21,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
   String name;
   TimelineEvent timelineEvent = new TimelineEvent();
   UserCrop userCrop;
+  Function refreshState;
 
   void _presentDatePicker(BuildContext context) {
     showDatePicker(
@@ -44,11 +45,12 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
       });
     });
   }
-  void addNewTimeline() async{
+  Future<void> addNewTimeline() async{
     TimelineEventClient timelineEventClient = new TimelineEventClient();
     timelineEvent.userCropId = userCrop.userCropId;
     var response = await timelineEventClient.addTimelineEvent(timelineEvent);
     if (response.statusCode == 201) {
+      refreshState();
       Navigator.of(context).pop();
     } else {
       throw Exception('Error while adding timeline');
@@ -80,16 +82,18 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
   Widget build(BuildContext context) {
     final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     userCrop = routArgs['userCrop'] as UserCrop;
+    refreshState = routArgs['refresh'] as Function;
+
     timelineEvent.timelineDate = _date;
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.check),
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                addNewTimeline();
+                addNewTimeline().whenComplete(() => Navigator.pop(context));
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation

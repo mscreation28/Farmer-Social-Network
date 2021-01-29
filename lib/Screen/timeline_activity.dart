@@ -20,11 +20,17 @@ class TimelineActivity extends StatefulWidget {
   _TimelineActivityState createState() => _TimelineActivityState();
 }
 
-class _TimelineActivityState extends State<TimelineActivity> {
-  void editActivity(TimelineEvent timeline, BuildContext cntx) {
-    Navigator.pushNamed(cntx, EditTimelineEvent.routeName, arguments: {
-      'timeline': timeline,
-    }).whenComplete(() => setState((){}));
+class _TimelineActivityState extends State<TimelineActivity> {  
+
+  void editActivity(TimelineEvent timeline,BuildContext cntx) {
+    Navigator.pushNamed(
+      cntx,
+      EditTimelineEvent.routeName,
+      arguments: {
+        'timeline' :timeline,
+        'refresh' :refresh,
+      }
+    );
   }
 
   TimelineTile _buildTimelineTile(
@@ -176,7 +182,14 @@ class _TimelineActivityState extends State<TimelineActivity> {
     );
   }
 
-  Future<List<TimelineEvent>> getCropTimelines(int userCropId) async {
+  void refresh() {
+    setState(() {
+      getCropTimelines(widget.userCrop.userCropId);
+    });
+  }
+
+  Future<List<TimelineEvent>> getCropTimelines(int userCropId) async
+  {
     TimelineEventClient timelineEventClient = new TimelineEventClient();
    List<TimelineEvent> timlineEventList = await timelineEventClient.getAllTimelineEvents(userCropId);
    timlineEventList.sort((timeline1,timeline2){
@@ -224,9 +237,10 @@ class _TimelineActivityState extends State<TimelineActivity> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, NewTimelineEvent.routeName, arguments: {
-            'userCrop': widget.userCrop,
-          }).whenComplete(() => setState(() {}));
+          Navigator.pushNamed(context, NewTimelineEvent.routeName,arguments: {
+             'userCrop': widget.userCrop,
+             'refresh': refresh,
+          });
         },
         child: Icon(Icons.add),
       ),

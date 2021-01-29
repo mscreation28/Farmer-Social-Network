@@ -1,4 +1,5 @@
 
+import 'package:KrishiMitr/Widget/delete_dialog_crop.dart';
 import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
@@ -27,6 +28,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
   DateTime _date = DateTime.now();
   String name;
   List<Crop> cropList;
+  Function refreshState;
   
   void _presentDatePicker(BuildContext context) {
     showDatePicker(
@@ -51,10 +53,11 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
     });
   }
 
-  void updateUserCrop() async{
+  Future<void> updateUserCrop() async{
     UserCropClient userCropClient = new UserCropClient();
     var response = await userCropClient.updateUserCrop(userCrop); 
     if(response.statusCode==200){
+      refreshState();
       Navigator.of(context).pop();
     }
   }
@@ -63,6 +66,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
     UserCropClient userCropClient = new UserCropClient();
     var response =  await userCropClient.deleteUserCrop(userCrop.userCropId);
     if(response.statusCode==200){
+      refreshState();
       Navigator.of(context).pop();
     }
   }
@@ -72,6 +76,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     userCrop = routeArgs['userCrop'] as UserCrop;
     cropList = routeArgs['cropList'] as List<Crop>;
+    refreshState = routeArgs['refresh'] as Function;
     selectCropId = croplist[0];
     _date = userCrop.cropDate;
 
@@ -80,16 +85,19 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
         actions: [
           IconButton(
             icon: Icon(Icons.delete),
-            onPressed: () {
-              deleteUserCrop();
-            }
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) {
+                return DeleteDialogCrop(deleteCrop: deleteUserCrop,);
+              },
+            )
           ),
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.check),
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();//save once fields are valid, onSaved method invoked for every form fields
-                updateUserCrop();
+                updateUserCrop().whenComplete(() => Navigator.pop(context));
               } else {
                 setState(() {
                   _autovalidateMode = AutovalidateMode.always; //enable realtime validation

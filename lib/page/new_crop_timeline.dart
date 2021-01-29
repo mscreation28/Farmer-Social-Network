@@ -19,6 +19,7 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
   String selectCropId;
   DateTime _date = DateTime.now();
   List<Crop> cropList;
+  Function refreshState;
   int userId;
 
 
@@ -48,10 +49,12 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
   
  
 
-  void addUserCrop() async{
+  Future<void> addUserCrop() async{
     UserCropClient userCropClient = new UserCropClient();
     userCrop.cropId =  int.parse(selectCropId);
     userCrop.userId = userId;
+    await userCropClient.addUserCrop(this.userCrop);
+    refreshState();
     var response = await userCropClient.addUserCrop(this.userCrop);
     if (response.statusCode == 201) {
         Navigator.of(context).pop();
@@ -67,17 +70,18 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
     var routeArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     cropList = routeArgs['cropList'] as List<Crop>;
     userId = routeArgs['userId'] as int;
+    refreshState = routeArgs['refresh'] as Function;
 
     userCrop.cropDate = _date;
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
+            icon: Icon(Icons.check),
             onPressed: () {
               if (_formKey.currentState.validate()) {                  
                 _formKey.currentState.save();
-                addUserCrop();//save once fields are valid, onSaved method invoked for every form fields
+                addUserCrop().whenComplete(() => Navigator.pop(context));//save once fields are valid, onSaved method invoked for every form fields
 
               } else {
                 setState(() {

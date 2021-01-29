@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 
 
 class UserCropList extends StatelessWidget {
+  final Function refresh;
   final UserCrop userCrop;
   List<Crop> cropList;
   Function callBack;
 
-  UserCropList(this.userCrop,this.cropList,this.callBack);
+  UserCropList(this.userCrop,this.cropList,this.refresh);
 
   void viewallActicity(BuildContext cntx) {
     Navigator.pushNamed(cntx, TimelineActivity.routeName, arguments: {
@@ -24,8 +25,9 @@ class UserCropList extends StatelessWidget {
   void editActivity(BuildContext cntx) {
     Navigator.pushNamed(cntx, EditCropTimeline.routeName, arguments: {
       'userCrop': userCrop,
-      'cropList':cropList
-    }).whenComplete(callBack);
+      'cropList':cropList,
+      'refresh':refresh,
+    });
   }
 
 
