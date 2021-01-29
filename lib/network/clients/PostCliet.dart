@@ -14,7 +14,7 @@ class PostClient implements IPostClient {
   Future<String> getTokenString() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString(Utils.TOKEN);
-  }
+  }  
 
   @override
   Future<List<PostModel>> getAllPostOnCrop(int cropId) async {

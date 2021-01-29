@@ -15,6 +15,7 @@ class TimelineCommentPage extends StatefulWidget {
   static const routeName = 'tmeline-comment-page';
   PostModel post;
   User user;
+  User loginUser;
   int postId;  
   TextEditingController commentController;
 
@@ -24,11 +25,16 @@ class TimelineCommentPage extends StatefulWidget {
 
 class _TimelineCommentPageState extends State<TimelineCommentPage> {  
   
+  Future<User> getUser(int userId) async {    
+    User user = await userClient.getSpecificUser(userId);    
+    return user;  
+  }
+
   @override
   Widget build(BuildContext context) {
     final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     widget.post = routArgs['post'] as PostModel;
-    widget.user = routArgs['user'] as User;
+    widget.loginUser = routArgs['loginuser'] as User;
     widget.postId = widget.post.postId;
     widget.commentController = TextEditingController();
 
@@ -50,7 +56,15 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BuildPost(post: widget.post, user: widget.user,),
+              FutureBuilder(
+                future: getUser(widget.post.userId),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                    ? BuildPost(post: widget.post, user: snapshot.data as User)
+                      : CircularProgressIndicator();
+                },
+              )
+              ,
               Divider(),
               Row(
                 children: [
@@ -214,7 +228,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
     );
   }
 
-  static int userId;
+  
   bool isLoggedIn = false;
   Comment comment = new Comment();
   Reply reply = new Reply();
@@ -225,23 +239,6 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
   int replyCommentId;
   String replyCommentName;
 
-  @override
-  void initState() {
-    super.initState();
-    autoLogIn();
-  } 
-  void autoLogIn() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int userIdData =  prefs.getInt(Utils.USER_ID);
-
-    if (userIdData != null) {
-      setState(() {
-        isLoggedIn = true;
-        userId = userIdData;
-      });
-      return;
-    }
-  }
 
   Future<List<Comment>> getAllComments(int postId) async {    
     List<Comment> commentList = await commentClient.getAllComment(postId);
@@ -261,7 +258,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
     else
     {
       comment.commentDate = DateTime.now();
-      comment.userId = userId;
+      comment.userId = widget.loginUser.userId;
       comment.postId = widget.postId;
       comment.comment = widget.commentController.text;
       widget.commentController.clear();
@@ -389,7 +386,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
     reply.commentId = commentid;
     reply.reply = replyText;
     reply.replyDate = DateTime.now();
-    reply.userId = userId;
+    reply.userId = widget.loginUser.userId;
     widget.commentController.text="";
     await replyClient.addReply(reply);
     setState(() {

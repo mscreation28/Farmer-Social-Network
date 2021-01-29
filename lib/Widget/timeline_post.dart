@@ -5,6 +5,7 @@ import 'package:KrishiMitr/models/post_model.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/LikeClient.dart';
+import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:flutter/material.dart';
 
 class BuildPost extends StatelessWidget {
@@ -165,8 +166,13 @@ class BuildPost extends StatelessWidget {
 }
 class TimelinePost extends StatelessWidget {
   PostModel post;
-  User user;
-  TimelinePost({this.post, this.user});  
+  User loginUser;
+  TimelinePost({this.post, this.loginUser}); 
+
+  Future<User> getUserDetails() async {
+    UserClient userClient = new UserClient();
+    return await userClient.getSpecificUser(post.userId);
+  }
 
   void addComment(BuildContext context) {
     Navigator.pushNamed(
@@ -174,16 +180,18 @@ class TimelinePost extends StatelessWidget {
       TimelineCommentPage.routeName,
       arguments: {
         'post' : post,
-        'user' : user,
+        'loginuser' : loginUser,
       }
     );
   } 
 
-  void addLike() {
+  void addLike() async {
     LikeClient likeClient = new LikeClient();
     Like like;
     like.postId = post.postId;
-    like.userId = user.userId;
+    like.userId = loginUser.userId;
+    print(like);
+    await likeClient.addLike(like);
   }
 
   @override
@@ -192,7 +200,15 @@ class TimelinePost extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
       child: Column(
         children: [
-          BuildPost(post: post, user: user,),
+          FutureBuilder(
+            future: getUserDetails(),
+            builder: (context, snapshot) {
+              return snapshot.hasData
+                ? BuildPost(post: post, user: snapshot.data,)
+                  : CircularProgressIndicator();
+            },
+          )
+          ,
           Divider(),
           Row(
             children: [

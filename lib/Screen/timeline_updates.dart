@@ -26,8 +26,8 @@ class _TimelineUpdateState extends State<TimelineUpdate> {
   String cropName;
   int userId;
   int cropId; 
-  User user;
-  PostClient postClient = new PostClient();
+  User loginUser;
+  PostClient postClient = new PostClient();  
 
   @override
   void initState() {
@@ -48,16 +48,20 @@ class _TimelineUpdateState extends State<TimelineUpdate> {
     }
   }
 
-  Future<User> getUser() async {
+  Future<User> getLoggedInUser() async {
     IUserClient userClient = new UserClient();
     return await userClient.getSpecificUser(userId);
   }
 
+  Future<User> getUserDetail(int userpostId) async {
+    IUserClient userClient = new UserClient();
+    return await userClient.getSpecificUser(userpostId);
+  }
+
   Future<List<PostModel>> getAllPostOnCrop() async {
-    user = await getUser();
+    loginUser = await getLoggedInUser();
     List<PostModel> postList =
         await postClient.getAllPostOnCrop(cropId);
-
     return postList;
   }
 
@@ -92,7 +96,7 @@ class _TimelineUpdateState extends State<TimelineUpdate> {
               itemBuilder: (context, index) {
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: TimelinePost(post: snapshot.data[index] as PostModel, user: user),
+                  child: TimelinePost(post: snapshot.data[index] as PostModel, loginUser: loginUser),
                 );
               },
               itemCount: snapshot.data.length,
