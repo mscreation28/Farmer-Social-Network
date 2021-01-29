@@ -1,3 +1,4 @@
+import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/network/clients/UserCropClient.dart';
@@ -54,7 +55,15 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
     userCrop.userId = userId;
     await userCropClient.addUserCrop(this.userCrop);
     refreshState();
+    var response = await userCropClient.addUserCrop(this.userCrop);
+    if (response.statusCode == 201) {
+        Navigator.of(context).pop();
+      } else {
+        throw Exception("Error while addding new crop");
+      }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -101,14 +110,17 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
             child: Column(
               children: [
                 DropdownButtonFormField<String>(
+
+                  autofocus: true,
                   value: selectCropId,
                   decoration: InputDecoration(
+                    
                     labelText: 'Select your crop*'
                   ),
                   // elevation: 20,
                   onChanged: (crop) =>
-                      setState((){selectCropId = crop;} ),
-                  validator: (value) => value == null ? 'field required' : null,
+                      setState((){selectCropId = crop;FocusScope.of(context).nextFocus(); } ),
+                  validator: (value) => value == null ? 'Crop is required' : null,
                   items: cropList.map<DropdownMenuItem<String>>((crop) {
                     return DropdownMenuItem<String>(
                       value: crop.cropId.toString(),
@@ -118,9 +130,12 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  decoration: InputDecoration(labelText: 'Enter crop variety*'),
-                  validator: (value) => value.isEmpty ? 'Crop variety is required' : null,
+               
+                  decoration: InputDecoration(hintText: 'Enter crop breed*'),
+                  validator: (value) => Validation.validateCropBreed(value),
                   onSaved: (value) => userCrop.breed = value,
+                  textInputAction: TextInputAction.next,
+                
                 ),
                 SizedBox(height: 10),
                 Row(
@@ -130,6 +145,7 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
                         decoration: InputDecoration(labelText: 'Enter Taluka*'),
                         validator: (value) => value.isEmpty ? 'Taluka is required field' : null,
                         onSaved: (value) => userCrop.croptaluka = value,
+                        textInputAction: TextInputAction.next,
                       ),
                     ),
                     SizedBox(width: 15),
@@ -137,7 +153,8 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
                       child: TextFormField(
                         decoration: InputDecoration(labelText: 'Enter District*',),
                         validator: (value) => value.isEmpty ? 'District is required' : null,
-                        onSaved: (value) => userCrop.cropCity = value,                        
+                        onSaved: (value) => userCrop.cropCity = value,  
+                          textInputAction: TextInputAction.next,                      
                       ),
                     ),
                   ],
@@ -147,18 +164,22 @@ class _NewCropTimelineState extends State<NewCropTimeline> {
                   decoration: InputDecoration(labelText: 'Enter State*'),
                   validator: (value) => value.isEmpty ? 'State is required' : null,
                   onSaved: (value) => userCrop.cropState = value,
+                    textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 10),
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Enter Area*'),
-                  validator: (value) => value.isEmpty ? 'Area is required' : null,
+                  validator: (value) => Validation.validateArea(value),
                   onSaved: (value) => userCrop.area = double.parse(value),
                   keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
                 ),
                 SizedBox(height: 10),
                 InkWell(
+                  autofocus: true,
                   onTap: () {_presentDatePicker(context);},
                   child: InputDecorator(
+                  
                     decoration: InputDecoration(labelText: 'Select Date*'),
                     child: new Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

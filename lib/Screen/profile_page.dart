@@ -4,7 +4,7 @@ import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/CropClient.dart';
 import 'package:KrishiMitr/network/clients/UserClient.dart';
 import 'package:KrishiMitr/network/clients/UserCropClient.dart';
-import 'package:KrishiMitr/network/clients/Utils.dart';
+import 'package:KrishiMitr/Utility/Utils.dart';
 import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
 import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
@@ -34,20 +34,20 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     autoLogIn();
-  } 
+  }
+
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final int userIdData =  prefs.getInt(Utils.USER_ID);
+    final int userIdData = prefs.getInt(Utils.USER_ID);
 
     if (userIdData != null) {
       setState(() {
         isLoggedIn = true;
-        userId= userIdData;
+        userId = userIdData;
       });
       return;
     }
   }
-
 
   void gotoEditProfile(User user) {
     Navigator.pushNamed(context, EditProfile.routeName,
@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     )
                   ],
                   image: DecorationImage(
-                    image: AssetImage("assets/images/farmer.png"),
+                    image: NetworkImage('${Utils.BASE_URL}uploads/${user.userProfileUrl}'),
                   )),
               // child: Image.asset(
               //   "assets/images/farmer.png",
@@ -210,10 +210,14 @@ class _ProfilePageState extends State<ProfilePage> {
     widget.cropList = await getCropList();
 
     //then fetch user crop
-    UserCropClient userCropClient = new UserCropClient();    
-    List<UserCrop> userCropList =
-        await userCropClient.getAllUserCrop(userId);
-      
+    UserCropClient userCropClient = new UserCropClient();
+    List<UserCrop> userCropList = await userCropClient.getAllUserCrop(userId);
+
+    //sort based on userCropDate
+    userCropList.sort((userCrop1,userCrop2){
+      return userCrop2.cropDate.compareTo(userCrop1.cropDate);
+    });
+
     userCropList.forEach((userCrop) {
       userCrop.cropName = widget.cropList
           .firstWhere((crop) => crop.cropId == userCrop.cropId)
@@ -230,31 +234,35 @@ class _ProfilePageState extends State<ProfilePage> {
       // appBar: AppBar(
 
       // ),
-      body:isLoggedIn?SingleChildScrollView(
-        child: Container(
-            color: Colors.grey.shade100,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              FutureBuilder(
-                  future: getUser(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData
-                        ? _headSection(snapshot.data as User)
-                        : CircularProgressIndicator();
-                  }),
-              SizedBox(
-                height: 10,
-              ),
-              FutureBuilder(
-                future: getUserCropList(),
-                builder: (context, snapshot) {
-                  return snapshot.hasData
-                      ? getUserCropListWidget(snapshot.data as List<UserCrop>)
-                      : CircularProgressIndicator();
-                },
-              )
-            ])),
-      ):Text("not logged In"),
+      body: isLoggedIn
+          ? SingleChildScrollView(
+              child: Container(
+                  color: Colors.grey.shade100,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FutureBuilder(
+                            future: getUser(),
+                            builder: (context, snapshot) {
+                              return snapshot.hasData
+                                  ? _headSection(snapshot.data as User)
+                                  : CircularProgressIndicator();
+                            }),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        FutureBuilder(
+                          future: getUserCropList(),
+                          builder: (context, snapshot) {
+                            return snapshot.hasData
+                                ? getUserCropListWidget(
+                                    snapshot.data as List<UserCrop>)
+                                : CircularProgressIndicator();
+                          },
+                        )
+                      ])),
+            )
+          : Text("not logged In"),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pushNamed(context, NewCropTimeline.routeName,

@@ -1,5 +1,6 @@
 import 'package:KrishiMitr/Screen/timeline_updates.dart';
 import 'package:KrishiMitr/Screen/timline_comment_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './page/edit_crop_timeline.dart';
 import './page/edit_profile.dart';
@@ -15,6 +16,8 @@ import './Screen/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'Utility/Utils.dart';
+
 
 // 06623b
 // 649d66
@@ -24,14 +27,42 @@ void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   static const appName = "Krish Mitr";
+ 
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool isLoggedIn = false;
+   static int userId;
+
+  @override
+  void initState() {
+    super.initState();
+    autoLogIn();
+  } 
+
+  void autoLogIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final int userIdData =  prefs.getInt(Utils.USER_ID);
+
+    if (userIdData != null) {
+      setState(() {
+        isLoggedIn = true;
+        userId= userIdData;
+      });
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return MaterialApp(
-      title: appName,
+      title: MyApp.appName,
       theme: ThemeData(        
         primaryColor: Color(0xff61b15a),
         primaryColorLight: Color(0xffadce74),        
@@ -42,7 +73,7 @@ class MyApp extends StatelessWidget {
           bodyText1: GoogleFonts.montserrat(textStyle: textTheme.bodyText1),
         ),
       ),
-      home: WelcomePage(),
+      home: isLoggedIn?TabScreen():WelcomePage(),
       routes: {
         LoginPage.routeName : (ctx) => LoginPage(),
         SignupPage.routeName : (ctx) => SignupPage(),

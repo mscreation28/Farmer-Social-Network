@@ -1,5 +1,6 @@
 
 import 'package:KrishiMitr/Widget/delete_dialog_event.dart';
+import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/timeline_event.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
@@ -72,12 +73,20 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
     TimelineEventClient timelineEventClient  = new TimelineEventClient();
     await timelineEventClient.updateTimelineEvent(timelineEvent);
     refreshState();
+    var response = await timelineEventClient.updateTimelineEvent(timelineEvent);
+    if(response.statusCode==200){
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> deleteTimeLineEvent() async{
     TimelineEventClient timelineEventClient = new TimelineEventClient();
-    await timelineEventClient.deleteTimelineEvent(timelineEvent.timelineId);
-    refreshState();
+    // await timelineEventClient.deleteTimelineEvent(timelineEvent.timelineId);
+    var response = await timelineEventClient.deleteTimelineEvent(timelineEvent.timelineId);
+    if(response.statusCode==200){
+      refreshState();
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -134,7 +143,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
                 TextFormField(
                   initialValue: timelineEvent.title,
                   decoration: InputDecoration(labelText: 'Enter event title*'),
-                  validator: (value) => value.isEmpty ? 'event title is required' : null,
+                  validator: (value) => Validation.validateTimelineTitle(value),
                   onSaved: (value) => timelineEvent.title = value,
                 ),
                 SizedBox(height: 10),
@@ -176,6 +185,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
                   ),
                   onSaved: (value) => timelineEvent.description = value,
                   keyboardType: TextInputType.multiline,
+                  validator: (value) => Validation.validateTimelineDescription(value),
                 ),
               ],
             ),

@@ -1,5 +1,6 @@
 
 import 'package:KrishiMitr/Widget/delete_dialog_crop.dart';
+import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/crops.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/network/clients/UserCropClient.dart';
@@ -9,8 +10,8 @@ import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class EditCropTimeline extends StatefulWidget {
-  static const routeName = "./edit-crop";
-   
+  static const routeName = "./edit-crop"; 
+  
   @override
   _EditCropTimelineState createState() => _EditCropTimelineState();
 }
@@ -54,14 +55,20 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
 
   Future<void> updateUserCrop() async{
     UserCropClient userCropClient = new UserCropClient();
-    await userCropClient.updateUserCrop(userCrop); 
-    refreshState();
+    var response = await userCropClient.updateUserCrop(userCrop); 
+    if(response.statusCode==200){
+      refreshState();
+      Navigator.of(context).pop();
+    }
   }
 
   void deleteUserCrop() async{
     UserCropClient userCropClient = new UserCropClient();
-    await userCropClient.deleteUserCrop(userCrop.userCropId);
-    refreshState();
+    var response =  await userCropClient.deleteUserCrop(userCrop.userCropId);
+    if(response.statusCode==200){
+      refreshState();
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -125,7 +132,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
                   // elevation: 20,
                   onChanged: (crop) =>
                       setState(()  {selectCropId = crop; userCrop.cropId = int.parse(crop);  }),
-                  validator: (value) => value == null ? 'field required' : null,
+                  validator: (value) => value == null ? 'Crop is required' : null,
                   items: cropList.map<DropdownMenuItem<String>>((Crop crop) {
                     return DropdownMenuItem<String>(
                       value: crop.cropId.toString(),
@@ -137,8 +144,8 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
                 SizedBox(height: 10),
                 TextFormField(
                   initialValue: userCrop.breed,
-                  decoration: InputDecoration(labelText: 'Enter crop variety*'),
-                  validator: (value) => value.isEmpty ? 'Crop variety is required' : null,
+                  decoration: InputDecoration(labelText: 'Enter crop breed*'),
+                  validator: (value) => Validation.validateCropBreed(value),
                   onSaved: (value) => userCrop.breed = value,
                 ),
                 SizedBox(height: 10),
@@ -174,7 +181,7 @@ class _EditCropTimelineState extends State<EditCropTimeline> {
                 TextFormField(
                   initialValue: userCrop.area.toString(),
                   decoration: InputDecoration(labelText: 'Enter Area*'),
-                  validator: (value) => value.isEmpty ? 'Area is required' : null,
+                  validator: (value) =>Validation.validateArea(value),
                   onSaved: (value) => userCrop.area = double.parse(value),
                   keyboardType: TextInputType.number,
                 ),

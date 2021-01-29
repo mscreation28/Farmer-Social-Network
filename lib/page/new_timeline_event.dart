@@ -1,3 +1,4 @@
+import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/timeline_event.dart';
 import 'package:KrishiMitr/models/user_crops.dart';
 import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
@@ -47,8 +48,13 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
   Future<void> addNewTimeline() async{
     TimelineEventClient timelineEventClient = new TimelineEventClient();
     timelineEvent.userCropId = userCrop.userCropId;
-    await timelineEventClient.addTimelineEvent(timelineEvent);
-    refreshState();
+    var response = await timelineEventClient.addTimelineEvent(timelineEvent);
+    if (response.statusCode == 201) {
+      refreshState();
+      Navigator.of(context).pop();
+    } else {
+      throw Exception('Error while adding timeline');
+    }
   }
 
   // Widget showCupertinoDate(BuildContext context) {
@@ -116,7 +122,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
               children: [                
                 TextFormField(
                   decoration: InputDecoration(labelText: 'Enter event title*'),
-                  validator: (value) => value.isEmpty ? 'event title is required' : null,
+                  validator: (value) => Validation.validateTimelineTitle(value),
                   onSaved: (value) => timelineEvent.title = value,
                 ),
                 SizedBox(height: 10),
@@ -155,6 +161,9 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
                   decoration: InputDecoration(labelText: 'Enter Description'),                  
                   onSaved: (value) => timelineEvent.description= value,
                   keyboardType: TextInputType.multiline,
+                  validator: (value) {
+                    return Validation.validateTimelineDescription(value);
+                  },
                 ),
               ],
             ),
