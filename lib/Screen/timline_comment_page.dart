@@ -1,5 +1,6 @@
 import 'package:KrishiMitr/Widget/timeline_post.dart';
 import 'package:KrishiMitr/models/comment.dart';
+import 'package:KrishiMitr/models/post_model.dart';
 import 'package:KrishiMitr/models/reply.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
 import 'package:KrishiMitr/models/users.dart';
@@ -12,7 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class TimelineCommentPage extends StatefulWidget {
   static const routeName = 'tmeline-comment-page';
-  TimelineModel timeline;
+  PostModel post;
+  User user;
   int postId;  
   TextEditingController commentController;
 
@@ -24,9 +26,10 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
   
   @override
   Widget build(BuildContext context) {
-    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, TimelineModel>;
-    widget.timeline = routArgs['timeline'];
-    widget.postId = 1;
+    final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    widget.post = routArgs['post'] as PostModel;
+    widget.user = routArgs['user'] as User;
+    widget.postId = widget.post.postId;
     widget.commentController = TextEditingController();
 
     return Scaffold(
@@ -47,7 +50,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BuildPost(timeline: widget.timeline,),
+              BuildPost(post: widget.post, user: widget.user,),
               Divider(),
               Row(
                 children: [

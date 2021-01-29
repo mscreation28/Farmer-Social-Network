@@ -1,11 +1,16 @@
 import 'package:KrishiMitr/Screen/timline_comment_page.dart';
 import 'package:KrishiMitr/models/dummy_data.dart';
+import 'package:KrishiMitr/models/like.dart';
+import 'package:KrishiMitr/models/post_model.dart';
 import 'package:KrishiMitr/models/timeline_model.dart';
+import 'package:KrishiMitr/models/users.dart';
+import 'package:KrishiMitr/network/clients/LikeClient.dart';
 import 'package:flutter/material.dart';
 
 class BuildPost extends StatelessWidget {
-  TimelineModel timeline;
-  BuildPost({this.timeline});
+  PostModel post;
+  User user;
+  BuildPost({this.post, this.user});
 
   String getCropname(String id) {
     return dummyCrop.firstWhere((element) => element.id==id).name;
@@ -13,7 +18,7 @@ class BuildPost extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final DateTime date = timeline.date;    
+    final DateTime date = post.postDate;    
     final DateTime curDate = DateTime.now();
     final _difference = curDate.difference(date).inDays;
 
@@ -21,7 +26,9 @@ class BuildPost extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Shyam's timeline update on ${getCropname(timeline.usercropid)}",
+          post.isUserCrop==1 
+            ? "Congratulate ${user.userName} fro soweing a new crop.."
+              : "${user.userName}'s Timeline updated..",
           style: TextStyle(
             fontSize: 15,
             color: Colors.grey.shade700
@@ -66,7 +73,7 @@ class BuildPost extends StatelessWidget {
                     children: [
                       FittedBox(
                         child: Text(
-                          'Shyam Makwana',
+                          '${user.userName}',
                           style: TextStyle(                          
                             fontSize: 17,
                             fontWeight: FontWeight.bold, 
@@ -79,7 +86,7 @@ class BuildPost extends StatelessWidget {
                       ),
                       FittedBox(                          
                         child: Text(
-                          'Junagadh, Gujarat',
+                          '${user.userCity}, ${user.userState}',
                           style: TextStyle(                          
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
@@ -107,7 +114,9 @@ class BuildPost extends StatelessWidget {
                 ),
               ),
               Text(
-                timeline.title,
+                post.isUserCrop==1 
+                  ? 'Wheat (${post.title})'
+                    : post.title,
                 style: TextStyle(
                   fontSize: 17,   
                   fontWeight: FontWeight.bold            
@@ -115,7 +124,7 @@ class BuildPost extends StatelessWidget {
               ),
               SizedBox(height: 4,),
               Text(
-                timeline.description!=null ? timeline.description : "none",
+                post.postDecription!=null ? post.postDecription : "-",
                 style: TextStyle(
                   fontSize: 15,
                   color: Colors.grey.shade600,               
@@ -140,7 +149,7 @@ class BuildPost extends StatelessWidget {
               ),
               WidgetSpan(child: SizedBox(width: 10,)),
               TextSpan(
-                text: '10 Like',
+                text: '${post.likeCount} Like',
                 style: TextStyle(                      
                   fontSize: 15,            
                   color: Theme.of(context).primaryColorDark,          
@@ -155,18 +164,27 @@ class BuildPost extends StatelessWidget {
   }
 }
 class TimelinePost extends StatelessWidget {
-  TimelineModel timeline;
-  TimelinePost({this.timeline});  
+  PostModel post;
+  User user;
+  TimelinePost({this.post, this.user});  
 
   void addComment(BuildContext context) {
     Navigator.pushNamed(
       context,
       TimelineCommentPage.routeName,
       arguments: {
-        'timeline' : timeline,        
+        'post' : post,
+        'user' : user,
       }
     );
   } 
+
+  void addLike() {
+    LikeClient likeClient = new LikeClient();
+    Like like;
+    like.postId = post.postId;
+    like.userId = user.userId;
+  }
 
   @override
   Widget build(BuildContext context) {    
@@ -174,7 +192,7 @@ class TimelinePost extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10,horizontal: 15),
       child: Column(
         children: [
-          BuildPost(timeline: timeline),
+          BuildPost(post: post, user: user,),
           Divider(),
           Row(
             children: [
@@ -182,7 +200,9 @@ class TimelinePost extends StatelessWidget {
                 padding: EdgeInsets.all(3),  
                 constraints: BoxConstraints(),
                 icon: Icon(Icons.favorite_outline),
-                onPressed: () {},           
+                onPressed: () {
+                  addLike();
+                },           
                 color: Colors.grey.shade700,       
               ),
               SizedBox(width: 5,),
