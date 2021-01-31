@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:KrishiMitr/models/timeline_event.dart';
-import 'package:KrishiMitr/network/interfaces/ITimelineEventClient.dart';
+import '../../models/timeline_event.dart';
+import '../interfaces/ITimelineEventClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';

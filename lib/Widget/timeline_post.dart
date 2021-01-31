@@ -1,13 +1,11 @@
-import 'package:KrishiMitr/Screen/profile_page.dart';
-import 'package:KrishiMitr/Screen/timline_comment_page.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:KrishiMitr/models/dummy_data.dart';
-import 'package:KrishiMitr/models/like.dart';
-import 'package:KrishiMitr/models/post_model.dart';
-import 'package:KrishiMitr/models/timeline_model.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/LikeClient.dart';
-import 'package:KrishiMitr/network/clients/UserClient.dart';
+import '../Screen/profile_page.dart';
+import '../Screen/timline_comment_page.dart';
+import '../Utility/Utils.dart';
+import '../models/like.dart';
+import '../models/post_model.dart';
+import '../models/users.dart';
+import '../network/clients/LikeClient.dart';
+import '../network/clients/UserClient.dart';
 import '../Screen/visitor_profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -17,10 +15,6 @@ class BuildPost extends StatelessWidget {
   User loginUser;
   BuildPost({this.post, this.user, this.loginUser});
 
-  String getCropname(String id) {
-    return dummyCrop.firstWhere((element) => element.id==id).name;
-  }
-  
   @override
   Widget build(BuildContext context) {
     final DateTime date = post.postDate;    

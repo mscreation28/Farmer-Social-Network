@@ -1,22 +1,14 @@
-import 'package:KrishiMitr/Widget/visitor_crop_item.dart';
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/CropClient.dart';
-import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/clients/UserCropClient.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
-import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
-import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../Widget/visitor_crop_item.dart';
+import '../models/crops.dart';
+import '../models/user_crops.dart';
+import '../models/users.dart';
+import '../network/clients/CropClient.dart';
+import '../network/clients/UserClient.dart';
+import '../network/clients/UserCropClient.dart';
+import '../Utility/Utils.dart';
+import '../network/interfaces/ICropClient.dart';
+import '../network/interfaces/IUserClient.dart';
 import '../page/edit_profile.dart';
-
-import '../page/new_crop_timeline.dart';
-
-import '../Widget/userCropListItem.dart';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -30,13 +22,6 @@ class VisitorProfilePage extends StatefulWidget {
 class _VisitorProfilePageState extends State<VisitorProfilePage> {
   static int userId;
   bool isLoggedIn = false;
-
-
-
-  void gotoEditProfile(User user) {
-    Navigator.pushNamed(context, EditProfile.routeName,
-        arguments: {'user': user,'refresh':refreshUser});
-  }
 
   Widget _headSection(User user) {
     return Container(
@@ -79,46 +64,6 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
                               fontWeight: FontWeight.bold),
                         ),
                       ),
-                      // Container(
-                      //   alignment: Alignment.topRight,
-                      //   child: FlatButton(
-                      //       materialTapTargetSize:
-                      //           MaterialTapTargetSize.shrinkWrap,
-                      //       onPressed: () {
-                      //         gotoEditProfile(user);
-                      //       },
-                      //       padding: EdgeInsets.only(right: 17),
-                      //       minWidth: 0,
-                      //       height: 0,
-                      //       // constraints: BoxConstraints(),
-                      //       child: RichText(
-                      //         text: TextSpan(children: [
-                      //           TextSpan(
-                      //             text: 'Edit Profile',
-                      //             style: GoogleFonts.cairo(
-                      //                 textStyle:
-                      //                     Theme.of(context).textTheme.caption,
-                      //                 fontSize: 15,
-                      //                 color: Theme.of(context).primaryColorDark,
-                      //                 fontWeight: FontWeight.bold),
-                      //           ),
-                      //           WidgetSpan(
-                      //               child: SizedBox(
-                      //             width: 5,
-                      //           )),
-                      //           WidgetSpan(
-                      //             child: Icon(
-                      //               Icons.edit,
-                      //               size: 21,
-                      //               color: Theme.of(context).primaryColorDark,
-                      //             ),
-                      //           )
-                      //         ]),
-                      //       )
-
-                      //       // icon:
-                      //       ),
-                      // ),
                     ],
                   )
                 ),
@@ -229,44 +174,36 @@ class _VisitorProfilePageState extends State<VisitorProfilePage> {
           color: Theme.of(context).primaryColorDark
         ),
       ),
-      body: 
-          SingleChildScrollView(
-              child: Container(
-                  color: Colors.grey.shade100,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FutureBuilder(
-                            future: getUser(),
-                            builder: (context, snapshot) {
-                              return snapshot.hasData
-                                  ? _headSection(snapshot.data as User)
-                                  : CircularProgressIndicator();
-                            }),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        FutureBuilder(
-                          future: getUserCropList(),
-                          builder: (context, snapshot) {
-                            return snapshot.hasData
-                                ? getUserCropListWidget(
-                                    snapshot.data as List<UserCrop>)
-                                : CircularProgressIndicator();
-                          },
-                        )
-                      ])),
-            )
-          // : Text("not logged In"),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.pushNamed(context, NewCropTimeline.routeName,
-      //         arguments: {'cropList': widget.cropList,'userId':userId,'refresh':refresh});
-      //   },
-      //   child: Icon(
-      //     Icons.add,
-      //   ),
-      // ),
+      body: SingleChildScrollView(
+        child: Container(
+          color: Colors.grey.shade100,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FutureBuilder(
+                future: getUser(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? _headSection(snapshot.data as User)
+                      : CircularProgressIndicator();
+                }
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              FutureBuilder(
+                future: getUserCropList(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? getUserCropListWidget(
+                          snapshot.data as List<UserCrop>)
+                      : CircularProgressIndicator();
+                },
+              )
+            ]
+          )
+        ),
+      )
     );
   }
 }

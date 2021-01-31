@@ -1,4 +1,4 @@
-import 'package:KrishiMitr/models/timeline_event.dart';
+import '../../models/timeline_event.dart';
 import 'package:http/http.dart';
 
 abstract class ITimeLineEventClient{

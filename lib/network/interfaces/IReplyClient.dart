@@ -1,4 +1,4 @@
-import 'package:KrishiMitr/models/reply.dart';
+import '../../models/reply.dart';
 
 abstract class IReplyClient{
   Future<List<Reply>> getAllReply(int commentId);   

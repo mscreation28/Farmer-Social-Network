@@ -1,5 +1,3 @@
-import 'package:KrishiMitr/Screen/profile_page.dart';
-import 'package:KrishiMitr/Screen/tab_page.dart';
 import 'package:flutter/material.dart';
 
 class DeleteDialogCrop extends StatelessWidget {

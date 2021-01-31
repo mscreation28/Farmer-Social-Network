@@ -1,7 +1,4 @@
-import 'package:KrishiMitr/Screen/signup_page.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import '../Screen/signup_page.dart';
 import '../Widget/titleText.dart';
 import './login_page.dart';
 import 'package:flutter/material.dart';

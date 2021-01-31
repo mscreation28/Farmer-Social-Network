@@ -1,8 +1,7 @@
-import 'package:KrishiMitr/Utility/Validation.dart';
-import 'package:KrishiMitr/models/timeline_event.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
-import 'package:flutter/cupertino.dart';
+import '../Utility/Validation.dart';
+import '../models/timeline_event.dart';
+import '../models/user_crops.dart';
+import '../network/clients/TimelineEventClient.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -60,29 +59,6 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
     }
   }
 
-
-  
-  // Widget showCupertinoDate(BuildContext context) {
-  //   return Container(     
-  //     height: MediaQuery.of(context).copyWith().size.height / 3,
-  //     decoration: BoxDecoration(        
-  //       borderRadius: BorderRadius.only(
-  //           topLeft: const Radius.circular(100),
-  //           topRight: const Radius.circular(100))),
-  //     child: CupertinoDatePicker(        
-  //       initialDateTime: _date,
-  //       onDateTimeChanged: (DateTime newdate) {
-  //         setState(() {
-  //           _date = newdate;
-  //         });
-  //       },        
-  //       maximumDate: DateTime.now(),       
-  //       // minuteInterval: 1,
-  //       mode: CupertinoDatePickerMode.date,
-  //     )
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final routArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
@@ -132,18 +108,7 @@ class _NewTimelineEventState extends State<NewTimelineEvent> {
                 ),
                 SizedBox(height: 10),
                 InkWell(
-                  onTap: () {
-                    // showModalBottomSheet(  
-                    //   shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.vertical(
-                    //       top: Radius.circular(15)
-                    //     ),
-                    //   ),                                                                
-                    //   context: context,
-                    //   builder: (context) {
-                    //     return showCupertinoDate(context);
-                    //   },
-                    // );
+                  onTap: () {                    
                     _presentDatePicker(context);
                   },
                   child: InputDecorator(

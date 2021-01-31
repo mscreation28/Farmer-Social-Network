@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:KrishiMitr/models/like.dart';
-import 'package:KrishiMitr/network/interfaces/ILikeClient.dart';
+import '../../models/like.dart';
+import '../interfaces/ILikeClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

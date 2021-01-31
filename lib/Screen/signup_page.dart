@@ -1,12 +1,9 @@
-import 'dart:convert';
-import 'dart:ffi';
-
-import 'package:KrishiMitr/Screen/login_page.dart';
-import 'package:KrishiMitr/Utility/Validation.dart';
-import 'package:KrishiMitr/Widget/titleText.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
+import './login_page.dart';
+import '../Utility/Validation.dart';
+import '../Widget/titleText.dart';
+import '../models/users.dart';
+import '../network/clients/UserClient.dart';
+import '../network/interfaces/IUserClient.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -16,6 +13,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  // ignore: missing_required_param
   User user = new User();
   TextEditingController userNameController = new TextEditingController();
   TextEditingController userContactNumberController =

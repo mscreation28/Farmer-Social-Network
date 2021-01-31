@@ -1,5 +1,4 @@
-import 'package:KrishiMitr/Screen/tab_page.dart';
-import 'package:KrishiMitr/Screen/timeline_activity.dart';
+import '../Screen/timeline_activity.dart';
 import 'package:flutter/material.dart';
 
 class DeleteDialogEvent extends StatelessWidget {

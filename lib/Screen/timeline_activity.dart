@@ -1,9 +1,6 @@
-import 'package:KrishiMitr/models/timeline_event.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
-import 'package:KrishiMitr/page/edit_timeline_event.dart';
-
-import '../models/timeline_model.dart';
+import '../models/timeline_event.dart';
+import '../network/clients/TimelineEventClient.dart';
+import '../page/edit_timeline_event.dart';
 import '../models/user_crops.dart';
 import '../page/new_timeline_event.dart';
 import 'package:flutter/material.dart';

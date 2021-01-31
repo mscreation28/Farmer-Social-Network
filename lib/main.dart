@@ -1,9 +1,7 @@
-import 'package:KrishiMitr/Screen/timeline_updates.dart';
-import 'package:KrishiMitr/Screen/timline_comment_page.dart';
-import 'package:KrishiMitr/Screen/visitor_profile_page.dart';
-import 'package:KrishiMitr/Screen/visitor_timeline_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import './Screen/timeline_updates.dart';
+import './Screen/timline_comment_page.dart';
+import './Screen/visitor_profile_page.dart';
+import './Screen/visitor_timeline_page.dart';
 import './page/edit_crop_timeline.dart';
 import './page/edit_profile.dart';
 import './page/edit_timeline_event.dart';
@@ -17,9 +15,8 @@ import './Screen/login_page.dart';
 import './Screen/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Utility/Utils.dart';
-
 
 // 06623b
 // 649d66

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
+import '../../models/crops.dart';
+import '../../Utility/Utils.dart';
+import '../interfaces/ICropClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class CropClient implements ICropClient{

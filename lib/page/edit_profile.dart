@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:KrishiMitr/Utility/Validation.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
+import '../Utility/Utils.dart';
+import '../Utility/Validation.dart';
+import '../models/users.dart';
+import '../network/clients/UserClient.dart';
+import '../network/interfaces/IUserClient.dart';
 import 'package:image_picker/image_picker.dart';
-// import 'package:KrishiMitr/Widget/imageDialog.dart';
 import 'package:flutter/material.dart';
 
 class EditProfile extends StatefulWidget {
@@ -46,22 +45,14 @@ class _EditProfileState extends State<EditProfile> {
         SimpleDialogOption(
           child: Text('Choose from Gallery'),
           onPressed: () {
-            getImage('Gallery').then((selectedImage) {
-              // setState(() {
-              //   imageFile = File(PickedFile.);
-              //   print(imageFile);
-              // });                  
+            getImage('Gallery').then((selectedImage) {                              
             });
           },
         ),
         SimpleDialogOption(
           child: Text('Take Photo'),
           onPressed: () {
-            getImage('Camera').then((selectedImage) {
-              // setState(() {
-              //   imageFile = selectedImage;
-              //   print(imageFile);
-              // });                  
+            getImage('Camera').then((selectedImage) {                            
             });
           },
         ),
@@ -144,9 +135,6 @@ class _EditProfileState extends State<EditProfile> {
                         : FileImage(imageFile)
                   )                           
                 ),
-                // child: imageFile != null
-                //   ? Image.file(imageFile)
-                //     : Image.asset("assets/images/farmer.png"),              
               ),
               FlatButton(
                 onPressed: () {
@@ -207,13 +195,6 @@ class _EditProfileState extends State<EditProfile> {
                           ),
                         ],
                       ),
-                      // TextFormField(
-                      //   initialValue: user.userpassword,
-                      //   obscureText: true,
-                      //   decoration: InputDecoration(labelText: 'Password'),
-                      //   validator: (value) => value.isEmpty ? 'Password is required' : null,
-                      //   onSaved: (value) => user.userpassword = value,                        
-                      // ),
                     ]
                   )
                 )

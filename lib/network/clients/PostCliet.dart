@@ -1,8 +1,7 @@
 import 'dart:convert';
 
-import 'package:KrishiMitr/models/post_model.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/network/interfaces/IPostClient.dart';
+import '../../models/post_model.dart';
+import '../interfaces/IPostClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

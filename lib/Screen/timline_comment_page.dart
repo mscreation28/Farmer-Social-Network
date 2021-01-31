@@ -1,17 +1,15 @@
-import 'package:KrishiMitr/Widget/timeline_post.dart';
-import 'package:KrishiMitr/models/comment.dart';
-import 'package:KrishiMitr/models/like.dart';
-import 'package:KrishiMitr/models/post_model.dart';
-import 'package:KrishiMitr/models/reply.dart';
-import 'package:KrishiMitr/models/timeline_model.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/CommentClient.dart';
-import 'package:KrishiMitr/network/clients/LikeClient.dart';
-import 'package:KrishiMitr/network/clients/ReplyClient.dart';
-import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
+import '../Widget/timeline_post.dart';
+import '../models/comment.dart';
+import '../models/like.dart';
+import '../models/post_model.dart';
+import '../models/reply.dart';
+import '../models/users.dart';
+import '../network/clients/CommentClient.dart';
+import '../network/clients/LikeClient.dart';
+import '../network/clients/ReplyClient.dart';
+import '../network/clients/UserClient.dart';
+import '../Utility/Utils.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class TimelineCommentPage extends StatefulWidget {
   static const routeName = 'tmeline-comment-page';
@@ -144,23 +142,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                       )
                     ) : SizedBox(width: 0,),
               Row(
-                children: [
-                  // Container(
-                  //   height: 50.0,
-                  //   width: 50.0,
-                  //   padding: EdgeInsets.all(8),                      
-                  //   decoration: BoxDecoration(
-                  //     color: Colors.white,
-                  //     shape: BoxShape.circle,                        
-                  //     border: Border.all(
-                  //       color: Colors.grey.shade200,
-                  //       width: 0.5,
-                  //     ),                      
-                  //     image: DecorationImage(
-                  //       image: AssetImage("assets/images/farmer.png"),
-                  //     )
-                  //   ),                   
-                  // ),                  
+                children: [                                  
                   SizedBox(
                     width: 7,
                   ),
@@ -201,11 +183,7 @@ class _TimelineCommentPageState extends State<TimelineCommentPage> {
                     width: 45,                                      
                     decoration: BoxDecoration(
                       color: Theme.of(context).primaryColorLight,
-                      shape: BoxShape.circle,                        
-                      // border: Border.all(
-                      //   color: Theme.of(contexrt).primaryColorDark,
-                      //   width: 1.5,
-                      // ),
+                      shape: BoxShape.circle,                                              
                     ),
                     child: IconButton(
                       icon: Icon(

@@ -1,7 +1,6 @@
-import 'package:KrishiMitr/Screen/timeline_updates.dart';
-import 'package:KrishiMitr/Widget/group_discussion_list.dart';
-import 'package:KrishiMitr/Widget/timeline_update_list.dart';
-import 'package:KrishiMitr/Widget/titleText.dart';
+import '../Widget/group_discussion_list.dart';
+import '../Widget/timeline_update_list.dart';
+import '../Widget/titleText.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:KrishiMitr/models/user_crops.dart';
+import '../../models/user_crops.dart';
 import 'package:http/http.dart';
 
 abstract class IUserCropClient{

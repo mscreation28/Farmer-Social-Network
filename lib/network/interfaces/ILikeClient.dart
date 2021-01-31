@@ -1,4 +1,4 @@
-import 'package:KrishiMitr/models/like.dart';
+import '../../models/like.dart';
 
 abstract class ILikeClient{  
   void deleteLike(int likeId, int postId);  

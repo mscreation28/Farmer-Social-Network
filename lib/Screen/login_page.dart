@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:KrishiMitr/Screen/tab_page.dart';
 import 'package:KrishiMitr/Utility/Validation.dart';
 import 'package:KrishiMitr/models/users.dart';
@@ -20,6 +19,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
+  // ignore: missing_required_param
   User user = new User();
   TextEditingController userContactNumberController =
       new TextEditingController();

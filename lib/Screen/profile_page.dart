@@ -1,22 +1,17 @@
-import 'package:KrishiMitr/Widget/titleText.dart';
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/CropClient.dart';
-import 'package:KrishiMitr/network/clients/UserClient.dart';
-import 'package:KrishiMitr/network/clients/UserCropClient.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
-import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
-import 'package:KrishiMitr/network/interfaces/IUserCropClient.dart';
+import '../Widget/titleText.dart';
+import '../models/crops.dart';
+import '../models/user_crops.dart';
+import '../models/users.dart';
+import '../network/clients/CropClient.dart';
+import '../network/clients/UserClient.dart';
+import '../network/clients/UserCropClient.dart';
+import '../Utility/Utils.dart';
+import '../network/interfaces/ICropClient.dart';
+import '../network/interfaces/IUserClient.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../page/edit_profile.dart';
-
 import '../page/new_crop_timeline.dart';
-
 import '../Widget/userCropListItem.dart';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 

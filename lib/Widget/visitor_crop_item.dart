@@ -1,13 +1,8 @@
-import 'package:KrishiMitr/Screen/timeline_activity.dart';
-import 'package:KrishiMitr/Screen/visitor_timeline_page.dart';
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/page/edit_crop_timeline.dart';
-
-
+import '../Screen/visitor_timeline_page.dart';
+import '../models/crops.dart';
+import '../models/user_crops.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
-
 
 class VisitorCropList extends StatelessWidget {
   final Function refresh;
@@ -48,13 +43,6 @@ class VisitorCropList extends StatelessWidget {
                     userCrop.cropName,
                     style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
                   ),
-                  // IconButton(
-                  //     padding: EdgeInsets.all(0),
-                  //     constraints: BoxConstraints(),
-                  //     icon: Icon(Icons.edit),
-                  //     onPressed: () {
-                  //       editActivity(context);
-                  //     })
                 ],
               ),
               Divider(),

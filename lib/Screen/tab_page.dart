@@ -1,12 +1,5 @@
-// import 'package:KrishiMitr/Screen/home_page.dart';
-
-import 'package:KrishiMitr/Screen/profile_page.dart';
-
-import './timeline_updates.dart';
-import '../Widget/titleText.dart';
-
+import './profile_page.dart';
 import 'home_page.dart';
-// import 'profile_page.dart';
 import 'package:flutter/material.dart';
 
 class TabScreen extends StatefulWidget {

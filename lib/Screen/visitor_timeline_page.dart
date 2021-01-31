@@ -1,11 +1,7 @@
-import 'package:KrishiMitr/models/timeline_event.dart';
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
-import 'package:KrishiMitr/page/edit_timeline_event.dart';
-
-import '../models/timeline_model.dart';
+import '../models/timeline_event.dart';
+import '../network/clients/TimelineEventClient.dart';
+import '../page/edit_timeline_event.dart';
 import '../models/user_crops.dart';
-import '../page/new_timeline_event.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,17 +17,6 @@ class VisitorTimelineActivity extends StatefulWidget {
 }
 
 class _VisitorTimelineActivityState extends State<VisitorTimelineActivity> {  
-
-  void editActivity(TimelineEvent timeline,BuildContext cntx) {
-    Navigator.pushNamed(
-      cntx,
-      EditTimelineEvent.routeName,
-      arguments: {
-        'timeline' :timeline,
-        'refresh' :refresh,
-      }
-    );
-  }
 
   TimelineTile _buildTimelineTile(
       TimelineEvent timelineEvent, List<TimelineEvent> timelineList) {
@@ -87,15 +72,6 @@ class _VisitorTimelineActivityState extends State<VisitorTimelineActivity> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Container(
-                  //   child: IconButton(
-                  //       icon: Icon(Icons.edit),
-                  //       padding: EdgeInsets.all(0),
-                  //       constraints: BoxConstraints(),
-                  //       onPressed: () {
-                  //         editActivity(timelineEvent, context);
-                  //       }),
-                  // )
                 ],
               ),
             ),
@@ -235,15 +211,6 @@ class _VisitorTimelineActivityState extends State<VisitorTimelineActivity> {
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     Navigator.pushNamed(context, NewTimelineEvent.routeName,arguments: {
-      //        'userCrop': widget.userCrop,
-      //        'refresh': refresh,
-      //     });
-      //   },
-      //   child: Icon(Icons.add),
-      // ),
     );
   }
 }

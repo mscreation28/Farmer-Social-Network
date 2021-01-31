@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:KrishiMitr/models/comment.dart';
-import 'package:KrishiMitr/network/interfaces/ICommentClient.dart';
+import '../../models/comment.dart';
+import '../interfaces/ICommentClient.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 

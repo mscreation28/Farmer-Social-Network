@@ -1,7 +1,7 @@
-import 'package:KrishiMitr/Utility/Validation.dart';
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/network/clients/UserCropClient.dart';
+import '../Utility/Validation.dart';
+import '../models/crops.dart';
+import '../models/user_crops.dart';
+import '../network/clients/UserCropClient.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';

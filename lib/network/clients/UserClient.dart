@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:KrishiMitr/models/users.dart';
-import 'package:KrishiMitr/Utility/Utils.dart';
-import 'package:KrishiMitr/network/interfaces/IUserClient.dart';
+import '../../models/users.dart';
+import '../../Utility/Utils.dart';
+import '../interfaces/IUserClient.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;

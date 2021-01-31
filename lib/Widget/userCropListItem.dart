@@ -1,9 +1,7 @@
-import 'package:KrishiMitr/Screen/timeline_activity.dart';
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/models/user_crops.dart';
-import 'package:KrishiMitr/page/edit_crop_timeline.dart';
-
-
+import '../Screen/timeline_activity.dart';
+import '../models/crops.dart';
+import '../models/user_crops.dart';
+import '../page/edit_crop_timeline.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 

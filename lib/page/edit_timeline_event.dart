@@ -1,9 +1,8 @@
-
-import 'package:KrishiMitr/Widget/delete_dialog_event.dart';
-import 'package:KrishiMitr/Utility/Validation.dart';
-import 'package:KrishiMitr/models/timeline_event.dart';
-import 'package:KrishiMitr/models/timeline_model.dart';
-import 'package:KrishiMitr/network/clients/TimelineEventClient.dart';
+import '../Widget/delete_dialog_event.dart';
+import '../Utility/Validation.dart';
+import '../models/timeline_event.dart';
+import '../models/timeline_model.dart';
+import '../network/clients/TimelineEventClient.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,27 +47,6 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
       });
     });
   }
-
-  // Widget showCupertinoDate(BuildContext context) {
-  //   return Container(     
-  //     height: MediaQuery.of(context).copyWith().size.height / 3,
-  //     decoration: BoxDecoration(        
-  //       borderRadius: BorderRadius.only(
-  //           topLeft: const Radius.circular(100),
-  //           topRight: const Radius.circular(100))),
-  //     child: CupertinoDatePicker(        
-  //       initialDateTime: _date,
-  //       onDateTimeChanged: (DateTime Editdate) {
-  //         setState(() {
-  //           _date = Editdate;
-  //         });
-  //       },        
-  //       maximumDate: DateTime.now(),       
-  //       // minuteInterval: 1,
-  //       mode: CupertinoDatePickerMode.date,
-  //     )
-  //   );
-  // }
   Future<void> editTimeLineEvent() async{
     TimelineEventClient timelineEventClient  = new TimelineEventClient();
     // await timelineEventClient.updateTimelineEvent(timelineEvent);
@@ -148,18 +126,7 @@ class _EditTimelineEventState extends State<EditTimelineEvent> {
                 ),
                 SizedBox(height: 10),
                 InkWell(
-                  onTap: () {
-                    // showModalBottomSheet(  
-                    //   shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.vertical(
-                    //       top: Radius.circular(15)
-                    //     ),
-                    //   ),                                                                
-                    //   context: context,
-                    //   builder: (context) {
-                    //     return showCupertinoDate(context);
-                    //   },
-                    // );
+                  onTap: () {                   
                     _presentDatePicker(context);
                   },
                   child: InputDecorator(

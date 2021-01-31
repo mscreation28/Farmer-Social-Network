@@ -1,7 +1,6 @@
-import 'package:KrishiMitr/Screen/timeline_updates.dart';
-import 'package:KrishiMitr/models/crops.dart';
-import 'package:KrishiMitr/network/clients/CropClient.dart';
-import 'package:KrishiMitr/network/interfaces/ICropClient.dart';
+import '../Screen/timeline_updates.dart';
+import '../models/crops.dart';
+import '../network/clients/CropClient.dart';
 import 'package:flutter/material.dart';
 
 class TimelineUpdateList extends StatelessWidget {
