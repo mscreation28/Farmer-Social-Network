@@ -53,6 +53,7 @@ flutter:
     - assets/images/back_farm.JPG
     - assets/images/farmer.png
     - assets/images/wheat.png
+    - assets/images/farmer_group.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

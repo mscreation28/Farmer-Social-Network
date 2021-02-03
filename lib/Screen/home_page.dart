@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     ];
     _iconlist = [
       {'title': 'Timeline Update', 'icon': 'assets/images/wheat.png'},
-      {'title': 'Group Discussion', 'icon': 'assets/images/farmer.png'}
+      {'title': 'Group Discussion', 'icon': 'assets/images/farmer_group.png'}
     ];
     super.initState();
   }
