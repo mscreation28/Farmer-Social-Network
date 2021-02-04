@@ -1,3 +1,5 @@
+import './Screen/group_details.dart';
+import './Screen/group_chat.dart';
 import './Screen/timeline_updates.dart';
 import './Screen/timline_comment_page.dart';
 import './Screen/visitor_profile_page.dart';
@@ -88,6 +90,8 @@ class _MyAppState extends State<MyApp> {
         TimelineUpdate.routeName: (ctx) => TimelineUpdate(),
         VisitorProfilePage.routeName: (ctx) => VisitorProfilePage(),
         VisitorTimelineActivity.routeName: (ctx) => VisitorTimelineActivity(),
+        GroupChat.routeName: (ctx) => GroupChat(),
+        GroupDetais.routeName: (ctx) => GroupDetais(),
       },
     );
   }
