@@ -1,15 +1,13 @@
+import 'package:KrishiMitr/network/clients/GroupClient.dart';
+
 import '../Screen/group_chat.dart';
 import '../models/groups.dart';
 import 'package:flutter/material.dart';
 
 class GroupDiscussionList extends StatelessWidget {  
   Future<List<Group>> getGroupList() async {
-    List<Group> list = [];
-    list.add(Group(groupId: 1, groupName: "Cereail"));
-    list.add(Group(groupId: 2, groupName: "Pulses"));
-    list.add(Group(groupId: 3, groupName: "Vegetables"));
-    list.add(Group(groupId: 4, groupName: "Fruits"));    
-    list.add(Group(groupId: 5, groupName: "OilSeeds"));
+    GroupClient groupClient = new GroupClient();
+    List<Group> list = await groupClient.getAllGroups();
     return list;
   }
   Widget _buildGroupList(BuildContext context, List<Group> groupList) {
@@ -24,8 +22,7 @@ class GroupDiscussionList extends StatelessWidget {
               context,
               GroupChat.routeName,
               arguments: {
-                'groupId' : groupList[i].groupId,
-                'groupName' : groupList[i].groupName,
+                'group':groupList[i]
               }
             );
           },

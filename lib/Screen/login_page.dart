@@ -27,9 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _validatePass = true;
   bool _validateContact = true;
   String _loginFailString = "";
-    final focus = FocusNode();
-
- 
+  final focus = FocusNode();
 
   Widget _inputArea(String inputText, TextEditingController controller,
       {bool isPassword = false}) {
@@ -46,8 +44,7 @@ class _LoginPageState extends State<LoginPage> {
             height: 10,
           ),
           TextFormField(
-             
-            textInputAction: TextInputAction.next,
+              textInputAction: TextInputAction.next,
               obscureText: isPassword,
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -153,19 +150,21 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setInt(Utils.USER_ID, json['userId']);
+      User user = User.fromJson(json['user']);  
+      prefs.setString(Utils.USER, jsonEncode(user));
+      prefs.setInt(Utils.USER_ID, user.userId);
       prefs.setString(Utils.TOKEN, json['token']);
-      Navigator.of(context).pushNamedAndRemoveUntil(TabScreen.routeName,(Route<dynamic> route) => false);
-    }else{
-         setState(() {
-           _loginFailString = "Incorrect username or password";
-         });
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          TabScreen.routeName, (Route<dynamic> route) => false);
+    } else {
+      setState(() {
+        _loginFailString = "Incorrect username or password";
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Container(
@@ -188,19 +187,21 @@ class _LoginPageState extends State<LoginPage> {
                       height: height * 0.08,
                     ),
                     Form(
-                     
                       key: _formKey,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-
                           _inputArea(
                               "Contact Number", userContactNumberController),
                           _inputArea("Password", userPasswordController,
                               isPassword: true),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(8.0,8.0,8.0,14.0),
-                            child: Text(_loginFailString,style: TextStyle(color: Colors.red),),
+                            padding:
+                                const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 14.0),
+                            child: Text(
+                              _loginFailString,
+                              style: TextStyle(color: Colors.red),
+                            ),
                           ),
                           Container(
                             alignment: Alignment.centerRight,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../models/groups.dart';
+
 class GroupDetais extends StatelessWidget {
   static const routeName = 'group-detals';
-  String groupName;
-  int groupId; 
+  Group group;
 
   Widget _buildImage(String imgUrl) {
     return Container(
@@ -25,8 +26,8 @@ class GroupDetais extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String,dynamic>;
-    groupName = routeArgs['groupName'] as String;
-    groupId = routeArgs['groupId'] as int;   
+    group =  routeArgs['group'] as Group;
+
 
     return Scaffold(
       appBar: AppBar(        
@@ -63,7 +64,7 @@ class GroupDetais extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "# $groupName",
+                    "# ${group.groupName}",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold
@@ -79,7 +80,7 @@ class GroupDetais extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    "This is the group where you can discuss all $groupName related  things. You can talk to many farmers across india and take benifite of their knowledge.",
+                    "${group.groupDescription}",
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.grey.shade900
