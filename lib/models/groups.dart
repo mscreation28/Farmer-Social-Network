@@ -1,8 +1,9 @@
 class Group{
   final int groupId;
   final String groupName;
+  final String groupDescription;
 
-  Group({this.groupId, this.groupName,});
+  Group({this.groupId, this.groupName,this.groupDescription});
 
   factory Group.fromJson(Map<String, dynamic> json){
     return Group(groupId: json['groupId'], groupName: json['groupName']);
@@ -11,7 +12,8 @@ class Group{
   Map<String,dynamic> toJson(){
     return {
       "groupId": groupId,
-      "groupName": groupName
+      "groupName": groupName,
+      "groupDescription":groupDescription
     };
   }
 }
