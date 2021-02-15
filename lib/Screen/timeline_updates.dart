@@ -64,10 +64,13 @@ class _TimelineUpdateState extends State<TimelineUpdate> {
 
   @override
   Widget build(BuildContext context) {
+    print("jdsjdhsj\n\n");    
     final routeArgs = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    print(routeArgs);
     cropName = routeArgs['cropname'] as String;
     cropId = routeArgs['cropid'] as int;
-    
+    print(cropName);
+    print(cropId);
     return Scaffold( 
       appBar: AppBar(
         title: Text(

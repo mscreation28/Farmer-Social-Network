@@ -9,6 +9,7 @@ class TimelineUpdateList extends StatelessWidget {
     List<Widget> list = [];
     for (var i = 0; i < croplist.length; i++) {
       print(croplist[i].cropName);
+      print(croplist[i].cropId);
       list.add(
         FlatButton( 
           padding: EdgeInsets.symmetric(horizontal: 5),        
@@ -39,7 +40,7 @@ class TimelineUpdateList extends StatelessWidget {
         ),
       );
     }
-    print(list);
+    // print(list);
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,8 +51,10 @@ class TimelineUpdateList extends StatelessWidget {
   }
 
   Future<List<Crop>> getCropList() async {
+    // print("testing1");
     CropClient cropClient = new CropClient();
     List<Crop> cropList =  await cropClient.getAllCrops();
+    // print(cropList);
     cropList.sort((c1,c2){
       return c1.cropId - c2.cropId;
     });
