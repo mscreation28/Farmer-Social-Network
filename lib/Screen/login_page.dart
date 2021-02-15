@@ -150,12 +150,16 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      User user = User.fromJson(json['user']);  
+      print(json['user']);
+      print(json['user']['userId']);
+      json['user']['userId']=json['user']['userId'].toString();
+      User user = User.fromJson(json['user']);       
       prefs.setString(Utils.USER, jsonEncode(user));
       prefs.setInt(Utils.USER_ID, user.userId);
       prefs.setString(Utils.TOKEN, json['token']);
       Navigator.of(context).pushNamedAndRemoveUntil(
-          TabScreen.routeName, (Route<dynamic> route) => false);
+        TabScreen.routeName, (Route<dynamic> route) => false
+      );
     } else {
       setState(() {
         _loginFailString = "Incorrect username or password";

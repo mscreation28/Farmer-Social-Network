@@ -74,28 +74,30 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       home: isLoggedIn ? TabScreen() : WelcomePage(),
+      routes: {
+        LoginPage.routeName: (ctx) => LoginPage(),
+        SignupPage.routeName: (ctx) => SignupPage(),
+        ProfilePage.routeName: (ctx) => ProfilePage(),
+        TabScreen.routeName: (ctx) => TabScreen(),
+        TimelineActivity.routeName: (ctx) => TimelineActivity(),
+        NewCropTimeline.routeName: (ctx) => NewCropTimeline(),
+        NewTimelineEvent.routeName: (ctx) => NewTimelineEvent(),
+        EditCropTimeline.routeName: (ctx) => EditCropTimeline(),
+        EditTimelineEvent.routeName: (ctx) => EditTimelineEvent(),
+        EditProfile.routeName: (ctx) => EditProfile(),
+        TimelineCommentPage.routeName: (ctx) => TimelineCommentPage(),
+        TimelineUpdate.routeName: (ctx) => TimelineUpdate(),
+        VisitorProfilePage.routeName: (ctx) => VisitorProfilePage(),
+        VisitorTimelineActivity.routeName: (ctx) => VisitorTimelineActivity(),
+        GroupDetais.routeName: (ctx) => GroupDetais(),
+      },
       onGenerateRoute: (RouteSettings settings) {
-        var routes = <String, WidgetBuilder>{
-          LoginPage.routeName: (ctx) => LoginPage(),
-          SignupPage.routeName: (ctx) => SignupPage(),
-          ProfilePage.routeName: (ctx) => ProfilePage(),
-          TabScreen.routeName: (ctx) => TabScreen(),
-          TimelineActivity.routeName: (ctx) => TimelineActivity(),
-          NewCropTimeline.routeName: (ctx) => NewCropTimeline(),
-          NewTimelineEvent.routeName: (ctx) => NewTimelineEvent(),
-          EditCropTimeline.routeName: (ctx) => EditCropTimeline(),
-          EditTimelineEvent.routeName: (ctx) => EditTimelineEvent(),
-          EditProfile.routeName: (ctx) => EditProfile(),
-          TimelineCommentPage.routeName: (ctx) => TimelineCommentPage(),
-          TimelineUpdate.routeName: (ctx) => TimelineUpdate(),
-          VisitorProfilePage.routeName: (ctx) => VisitorProfilePage(),
-          VisitorTimelineActivity.routeName: (ctx) => VisitorTimelineActivity(),
-          GroupChat.routeName: (ctx) => GroupChat(settings.arguments),
-          GroupDetais.routeName: (ctx) => GroupDetais(),
+        var routes = <String, WidgetBuilder>{          
+          GroupChat.routeName: (ctx) => GroupChat(settings.arguments),          
         };
         WidgetBuilder builder = routes[settings.name];
         return MaterialPageRoute(builder: (ctx) => builder(ctx));
-      },
+      },      
     );
   }
 }

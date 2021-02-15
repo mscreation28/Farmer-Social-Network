@@ -23,8 +23,8 @@ class User{
       userCity: json['userCity'],
       userState: json['userState'],
       userProfileUrl: json['userProfileUrl'], 
-     userType: json['userType'],
-     userpassword: json['userPassword'],
+      userType: json['userType'],
+      userpassword: json['userPassword'],
     );  
   }
 

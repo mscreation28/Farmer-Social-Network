@@ -8,7 +8,6 @@ import '../Widget/message_tile.dart';
 import 'package:flutter/material.dart';
 
 import '../models/groups.dart';
-import '../models/groups.dart';
 import '../models/users.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -23,7 +22,12 @@ class GroupChat extends StatefulWidget {
   Group group;
 
   GroupChat(this.arguments) {
+    print(arguments['group']);
     group = arguments['group'];
+    groupName = group.groupName;
+    groupId = group.groupId;
+    // print("\n\n\n");
+    // print(group.groupName);
   }
 
   @override
