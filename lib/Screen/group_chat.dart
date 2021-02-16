@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:KrishiMitr/Utility/StreamSocket.dart';
+import 'package:KrishiMitr/models/Message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Screen/group_details.dart';
@@ -49,8 +51,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _GroupChatState extends State<GroupChat> {
+  StreamSocket streamSocket = StreamSocket();
   User sender;
   IO.Socket socket;
+  List<Message> messageList;
 
   @override
   void initState() {
@@ -62,6 +66,7 @@ class _GroupChatState extends State<GroupChat> {
   void getCurrentUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     sender = User.fromJson(jsonDecode(prefs.getString(Utils.USER)));
+    // messageList = await new Message().getMessages(widget.group.groupId, sender.userId);
   }
 
   void establishConnection() async {
@@ -75,57 +80,70 @@ class _GroupChatState extends State<GroupChat> {
         print('connected');
         socket.emit(
             'joinChannel',
-            jsonEncode(<String,dynamic>
-              {
-                "userId": sender.userId,
-                "userName": sender.userName,
-                "groupId": widget.group.groupId
-              }
-            ));
+            jsonEncode(<String, dynamic>{
+              "userId": sender.userId,
+              "userName": sender.userName,
+              "groupId": widget.group.groupId
+            }));
+      });
+      socket.on('message', (data) {
+        print("here");
+        print(data);
+        var json = jsonDecode(data);
+
+        Message message = Message.fromJson(json);
+        message.sentByMe = false;
+
+        setState(() {
+
+          message.storeMessage(message);
+        });
+        streamSocket.addResponse(message);
       });
     } catch (e) {
       print(e.toString());
     }
   }
 
-  Widget _getChatMessage() {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return MessageTile(
-          message: widget.msglist[index]['message'],
-          sender: widget.msglist[index]['sender'],
-          sentbyMe: widget.msglist[index]['sentbyMe'],
-          time: widget.msglist[index]['time'],
-        );
-      },
-      itemCount: widget.msglist.length,
+  Widget _getChatMessage(List<Message> messageList) {
+    return Container(
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return MessageTile(messageList[index]);
+        },
+        itemCount: messageList.length,
+      ),
     );
   }
 
   void _sendMessage() {
     if (widget.messageController.text.isNotEmpty &&
         widget.messageController.text != "") {
-      var message = {
-        'sender': 'Shyam',
-        'message': widget.messageController.text,
-        'sentbyMe': true,
-        'time': '6:40 PM'
-      };
-    socket.emit(
-            'chatMessage',
-            jsonEncode(<String,dynamic>
-              {
-                "userId": sender.userId,
-                "userName": sender.userName,
-                "groupId": widget.group.groupId,
-                "message":widget.messageController.text
-              }
-            ));
+      Message message = new Message(
+        message: widget.messageController.text,
+        userId: sender.userId,
+        userName: sender.userName,
+        groupId: widget.group.groupId,
+        sentByMe: true,
+        messageTime: DateTime.now(),
+      );
+      widget.messageController.text = "";
+      socket.emit(
+        'chatMessage',
+        jsonEncode(message.toJson()),
+      );
+
       setState(() {
-        widget.messageController.text = "";
-        widget.msglist.add(message);
+        message.storeMessage(message);
+        // streamSocket.addResponse(message);
       });
     }
+  }
+
+  Future<List<Message>> getMessagesFromDb() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    sender = User.fromJson(jsonDecode(prefs.getString(Utils.USER)));
+    return new Message().getMessages(widget.group.groupId,sender.userId);
   }
 
   @override
@@ -150,7 +168,15 @@ class _GroupChatState extends State<GroupChat> {
       body: Container(
         child: Stack(
           children: [
-            _getChatMessage(),
+            FutureBuilder(
+                future: getMessagesFromDb(),
+                builder: (context, snapshot) {
+                  return snapshot.data != null
+                      ? _getChatMessage(snapshot.data as List<Message>)
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        );
+                }),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
