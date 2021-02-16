@@ -1,12 +1,10 @@
 import 'dart:convert';
-
+import 'package:KrishiMitr/Utility/GroupData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Screen/group_details.dart';
 import '../Utility/Utils.dart';
 import '../Widget/message_tile.dart';
 import 'package:flutter/material.dart';
-
 import '../models/groups.dart';
 import '../models/users.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -127,6 +125,20 @@ class _GroupChatState extends State<GroupChat> {
       });
     }
   }
+  Future<void> _buildNavigation(BuildContext context, Group group) async {
+    GroupData groupData = new GroupData();         
+    List<User> users = await groupData.getGroupUsers(group);
+    Navigator.pushNamed(
+      context,
+      GroupDetais.routeName,
+      arguments: {
+        'group':group,
+        'groupUsers':users,
+        'isInGroup':true,
+        'currentUser':sender,
+      }
+    );     
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -141,10 +153,7 @@ class _GroupChatState extends State<GroupChat> {
           iconTheme: IconThemeData(color: Theme.of(context).primaryColorDark),
         ),
         onTap: () {
-          Navigator.pushNamed(context, GroupDetais.routeName, arguments: {
-            'groupName': widget.groupName,
-            'groupId': widget.groupId
-          });
+          _buildNavigation(context, widget.group);
         },
       ),
       body: Container(

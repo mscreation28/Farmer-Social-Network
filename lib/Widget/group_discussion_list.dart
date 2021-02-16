@@ -1,3 +1,6 @@
+import 'package:KrishiMitr/Screen/group_details.dart';
+import 'package:KrishiMitr/Utility/GroupData.dart';
+import 'package:KrishiMitr/models/users.dart';
 import 'package:KrishiMitr/network/clients/GroupClient.dart';
 
 import '../Screen/group_chat.dart';
@@ -10,21 +13,42 @@ class GroupDiscussionList extends StatelessWidget {
     List<Group> list = await groupClient.getAllGroups();
     return list;
   }
-  Widget _buildGroupList(BuildContext context, List<Group> groupList) {
-
+  Future<void> _buildNavigation(BuildContext context, Group group) async {
+    GroupData groupData = new GroupData();
+    bool check = await groupData.checkUserGroup(group);
+    print(check);
+    if(check) {
+      Navigator.pushNamed(
+        context,
+        GroupChat.routeName,
+        arguments: {
+          'group':group,         
+        }
+      );
+    }
+    else {
+      List<User> users = await groupData.getGroupUsers(group);
+      User u = await groupData.getCurrentUser();
+      Navigator.pushNamed(
+        context,
+        GroupDetais.routeName,
+        arguments: {
+          'group':group,
+          'groupUsers':users,
+          'isInGroup':false,
+          'currentUser':u,
+        }
+      ); 
+    }  
+  }
+  Widget _buildGroupList(BuildContext context, List<Group> groupList) {    
     List<Widget> list = [];
     for (var i = 0; i < groupList.length; i++) {      
       list.add(
         FlatButton( 
           padding: EdgeInsets.symmetric(horizontal: 5),        
           onPressed: () {
-            Navigator.pushNamed(
-              context,
-              GroupChat.routeName,
-              arguments: {
-                'group':groupList[i]
-              }
-            );
+            _buildNavigation(context, groupList[i]);
           },
           materialTapTargetSize:
                 MaterialTapTargetSize.shrinkWrap,
