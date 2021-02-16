@@ -1,12 +1,10 @@
+import 'package:KrishiMitr/models/Message.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MessageTile extends StatelessWidget {
-  final String message;
-  final String sender;
-  final bool sentbyMe;
-  final String time;
-
-  MessageTile({this.message, this.sender, this.sentbyMe, this.time});
+  Message message;
+  MessageTile(this.message);
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +12,15 @@ class MessageTile extends StatelessWidget {
       padding: EdgeInsets.only(
         top: 4,
         bottom: 4,
-        left: sentbyMe ? 0 : 12,
-        right: sentbyMe ? 12 : 0
+        left: message.sentByMe ? 0 : 12,
+        right: message.sentByMe? 12 : 0
       ),
-      alignment: sentbyMe ? Alignment.centerRight : Alignment.centerLeft,
+      alignment: message.sentByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: sentbyMe ? EdgeInsets.only(left: 45) : EdgeInsets.only(right: 45),
+        margin: message.sentByMe ? EdgeInsets.only(left: 45) : EdgeInsets.only(right: 45),
         padding: EdgeInsets.only(top: 7, bottom: 7, left: 12, right: 12),
         decoration: BoxDecoration(
-        borderRadius: sentbyMe ? BorderRadius.only(
+        borderRadius: message.sentByMe ? BorderRadius.only(
             topLeft: Radius.circular(15),
             topRight: Radius.circular(15),
             bottomLeft: Radius.circular(15)
@@ -33,7 +31,7 @@ class MessageTile extends StatelessWidget {
             topRight: Radius.circular(15),
             bottomRight: Radius.circular(15)
           ),
-          color: sentbyMe ? Theme.of(context).primaryColorLight.withOpacity(0.82) : Colors.grey.shade300
+          color: message.sentByMe ? Theme.of(context).primaryColorLight.withOpacity(0.82) : Colors.grey.shade300
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -47,18 +45,18 @@ class MessageTile extends StatelessWidget {
                   minWidth: 0,
                   padding: EdgeInsets.all(0),
                   child: Text(
-                    sender, textAlign: TextAlign.start,
+                    message.userName, textAlign: TextAlign.start,
                     style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
                   ),
                   onPressed: () {},
                 ),
                 SizedBox(height: 6.0),
-                Text(message, textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0)),
+                Text(message.message, textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0)),
                 SizedBox(height: 4),                              
               ],
             ),
             Text(
-              time,
+              DateFormat.jm().format(message.messageTime),
               style: TextStyle(
                 fontSize: 12.0,
                 color: Colors.grey.shade700
