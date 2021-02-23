@@ -1,14 +1,13 @@
 import 'dart:convert';
+import 'package:KrishiMitr/Utility/GroupData.dart';
 
 import 'package:KrishiMitr/Utility/StreamSocket.dart';
 import 'package:KrishiMitr/models/Message.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../Screen/group_details.dart';
 import '../Utility/Utils.dart';
 import '../Widget/message_tile.dart';
 import 'package:flutter/material.dart';
-
 import '../models/groups.dart';
 import '../models/users.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -24,7 +23,7 @@ class GroupChat extends StatefulWidget {
   Group group;
 
   GroupChat(this.arguments) {
-    print(arguments['group']);
+    // print(arguments['group']);
     group = arguments['group'];
     groupName = group.groupName;
     groupId = group.groupId;
@@ -108,8 +107,15 @@ class _GroupChatState extends State<GroupChat> {
   Widget _getChatMessage(List<Message> messageList) {
     return Container(
       child: ListView.builder(
-        itemBuilder: (context, index) {
-          return MessageTile(messageList[index]);
+        itemBuilder: (context, index) {          
+          return index!=messageList.length-1 
+            ? MessageTile(messageList[index])
+              : Column(
+                children: [
+                  MessageTile(messageList[index]),
+                  SizedBox(height: 60,)
+                ],
+              );
         },
         itemCount: messageList.length,
       ),
@@ -139,6 +145,20 @@ class _GroupChatState extends State<GroupChat> {
       });
     }
   }
+  Future<void> _buildNavigation(BuildContext context, Group group) async {
+    GroupData groupData = new GroupData();         
+    List<User> users = await groupData.getGroupUsers(group);
+    Navigator.pushNamed(
+      context,
+      GroupDetais.routeName,
+      arguments: {
+        'group':group,
+        'groupUsers':users,
+        'isInGroup':true,
+        'currentUser':sender,
+      }
+    );     
+  }
 
   Future<List<Message>> getMessagesFromDb() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -159,10 +179,7 @@ class _GroupChatState extends State<GroupChat> {
           iconTheme: IconThemeData(color: Theme.of(context).primaryColorDark),
         ),
         onTap: () {
-          Navigator.pushNamed(context, GroupDetais.routeName, arguments: {
-            'groupName': widget.groupName,
-            'groupId': widget.groupId
-          });
+          _buildNavigation(context, widget.group);
         },
       ),
       body: Container(
@@ -180,6 +197,7 @@ class _GroupChatState extends State<GroupChat> {
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
+
               child: Container(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 padding: EdgeInsets.all(7),

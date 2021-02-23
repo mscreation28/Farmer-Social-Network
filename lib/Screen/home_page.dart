@@ -1,3 +1,5 @@
+import 'package:KrishiMitr/Widget/news_list.dart';
+
 import '../Widget/group_discussion_list.dart';
 import '../Widget/timeline_update_list.dart';
 import '../Widget/titleText.dart';
@@ -27,10 +29,12 @@ class _HomePageState extends State<HomePage> {
     _pages = [
       {'page': TimelineUpdateList()},      
       {'page': GroupDiscussionList()},
+      {'page': NewsList()},
     ];
     _iconlist = [
       {'title': 'Timeline Update', 'icon': 'assets/images/wheat.png'},
-      {'title': 'Group Discussion', 'icon': 'assets/images/farmer_group.png'}
+      {'title': 'Group Discussion', 'icon': 'assets/images/farmer_group.png'},
+      {'title': 'News', 'icon': 'assets/images/farmer.png'}
     ];
     super.initState();
   }

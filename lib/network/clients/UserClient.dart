@@ -59,7 +59,13 @@ class UserClient implements IUserClient {
     );
     print(jsonDecode(response.body));
     if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body)['user']);
+      // print("\n\nddd\n\n");
+      var res = jsonDecode(response.body)['user'];
+      // print(res);
+      res['userId'] = res['userId'].toString();
+      // print(res);
+      User u = User.fromJson(res);      
+      return u;
     } else {
       throw Exception('Failed to load user');
     }

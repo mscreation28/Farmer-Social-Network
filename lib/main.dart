@@ -1,3 +1,6 @@
+import 'package:KrishiMitr/Screen/news_page.dart';
+import 'package:KrishiMitr/Screen/news_web_view.dart';
+
 import './Screen/group_details.dart';
 import './Screen/group_chat.dart';
 import './Screen/timeline_updates.dart';
@@ -89,11 +92,13 @@ class _MyAppState extends State<MyApp> {
         TimelineUpdate.routeName: (ctx) => TimelineUpdate(),
         VisitorProfilePage.routeName: (ctx) => VisitorProfilePage(),
         VisitorTimelineActivity.routeName: (ctx) => VisitorTimelineActivity(),
-        GroupDetais.routeName: (ctx) => GroupDetais(),
+        GroupDetais.routeName: (ctx) => GroupDetais(),        
+        NewsWebView.routeName: (ctx) => NewsWebView(),
       },
       onGenerateRoute: (RouteSettings settings) {
         var routes = <String, WidgetBuilder>{          
           GroupChat.routeName: (ctx) => GroupChat(settings.arguments),          
+          NewsPage.routeName: (ctx) => NewsPage(settings.arguments),
         };
         WidgetBuilder builder = routes[settings.name];
         return MaterialPageRoute(builder: (ctx) => builder(ctx));
