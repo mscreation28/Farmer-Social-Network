@@ -26,6 +26,7 @@ dependencies:
   google_fonts: ^1.1.1
   timeline_tile: ^1.0.0
   image_picker: ^0.6.7+21
+  webview_flutter: ^1.0.7
   http:
   shared_preferences:
   dio:

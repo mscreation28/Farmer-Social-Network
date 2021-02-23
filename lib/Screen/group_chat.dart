@@ -23,7 +23,7 @@ class GroupChat extends StatefulWidget {
   Group group;
 
   GroupChat(this.arguments) {
-    print(arguments['group']);
+    // print(arguments['group']);
     group = arguments['group'];
     groupName = group.groupName;
     groupId = group.groupId;
