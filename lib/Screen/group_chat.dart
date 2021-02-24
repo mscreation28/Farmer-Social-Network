@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:KrishiMitr/Utility/GroupData.dart';
 
@@ -21,10 +22,12 @@ class GroupChat extends StatefulWidget {
 
   var arguments;
   Group group;
+  IO.Socket socket;
 
   GroupChat(this.arguments) {
     // print(arguments['group']);
     group = arguments['group'];
+    socket = arguments['socket'];
     groupName = group.groupName;
     groupId = group.groupId;
     // print("\n\n\n");
@@ -52,40 +55,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 class _GroupChatState extends State<GroupChat> {
   StreamSocket streamSocket = StreamSocket();
   User sender;
-  IO.Socket socket;
   List<Message> messageList;
 
+  
   @override
   void initState() {
     super.initState();
     getCurrentUser();
-    establishConnection();
+    getMessagesFromDb();
+    listenForNewMessage();
   }
 
-  void getCurrentUser() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    sender = User.fromJson(jsonDecode(prefs.getString(Utils.USER)));
-    // messageList = await new Message().getMessages(widget.group.groupId, sender.userId);
-  }
-
-  void establishConnection() async {
-    try {
-      socket = IO.io(Utils.BASE_URL, <String, dynamic>{
-        'transports': ['websocket'],
-        'autoConnect': false,
-      });
-      socket.connect();
-      socket.onConnect((_) {
-        print('connected');
-        socket.emit(
-            'joinChannel',
-            jsonEncode(<String, dynamic>{
-              "userId": sender.userId,
-              "userName": sender.userName,
-              "groupId": widget.group.groupId
-            }));
-      });
-      socket.on('message', (data) {
+  void listenForNewMessage(){
+        widget.socket.on('message', (data) {
         print("here");
         print(data);
         var json = jsonDecode(data);
@@ -94,28 +76,33 @@ class _GroupChatState extends State<GroupChat> {
         message.sentByMe = false;
 
         setState(() {
-
-          message.storeMessage(message);
+          
         });
-        streamSocket.addResponse(message);
-      });
-    } catch (e) {
-      print(e.toString());
-    }
+        
+    });
+  }
+
+  void getCurrentUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    sender = User.fromJson(jsonDecode(prefs.getString(Utils.USER)));
+    messageList =
+        await new Message().getMessages(widget.group.groupId, sender.userId);
   }
 
   Widget _getChatMessage(List<Message> messageList) {
     return Container(
       child: ListView.builder(
-        itemBuilder: (context, index) {          
-          return index!=messageList.length-1 
-            ? MessageTile(messageList[index])
+        itemBuilder: (context, index) {
+          return index != messageList.length - 1
+              ? MessageTile(messageList[index])
               : Column(
-                children: [
-                  MessageTile(messageList[index]),
-                  SizedBox(height: 60,)
-                ],
-              );
+                  children: [
+                    MessageTile(messageList[index]),
+                    SizedBox(
+                      height: 60,
+                    )
+                  ],
+                );
         },
         itemCount: messageList.length,
       ),
@@ -134,36 +121,35 @@ class _GroupChatState extends State<GroupChat> {
         messageTime: DateTime.now(),
       );
       widget.messageController.text = "";
-      socket.emit(
+      widget.socket.emit(
         'chatMessage',
         jsonEncode(message.toJson()),
       );
 
       setState(() {
         message.storeMessage(message);
-        // streamSocket.addResponse(message);
       });
+        
+        // streamSocket.addResponse(message);
+    
     }
   }
+
   Future<void> _buildNavigation(BuildContext context, Group group) async {
-    GroupData groupData = new GroupData();         
+    GroupData groupData = new GroupData();
     List<User> users = await groupData.getGroupUsers(group);
-    Navigator.pushNamed(
-      context,
-      GroupDetais.routeName,
-      arguments: {
-        'group':group,
-        'groupUsers':users,
-        'isInGroup':true,
-        'currentUser':sender,
-      }
-    );     
+    Navigator.pushNamed(context, GroupDetais.routeName, arguments: {
+      'group': group,
+      'groupUsers': users,
+      'isInGroup': true,
+      'currentUser': sender,
+    });
   }
 
   Future<List<Message>> getMessagesFromDb() async{
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     sender = User.fromJson(jsonDecode(prefs.getString(Utils.USER)));
-    return new Message().getMessages(widget.group.groupId,sender.userId);
+    return await new Message().getMessages(widget.group.groupId, sender.userId);
   }
 
   @override
@@ -186,7 +172,7 @@ class _GroupChatState extends State<GroupChat> {
         child: Stack(
           children: [
             FutureBuilder(
-                future: getMessagesFromDb(),
+              future: getMessagesFromDb(),
                 builder: (context, snapshot) {
                   return snapshot.data != null
                       ? _getChatMessage(snapshot.data as List<Message>)
@@ -197,7 +183,6 @@ class _GroupChatState extends State<GroupChat> {
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
-
               child: Container(
                 color: Theme.of(context).scaffoldBackgroundColor,
                 padding: EdgeInsets.all(7),
